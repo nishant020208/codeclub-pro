@@ -16,9 +16,14 @@ import ProfilePage from "@/pages/ProfilePage";
 import BadgesPage from "@/pages/BadgesPage";
 import AchievementsPage from "@/pages/AchievementsPage";
 import CompetitionsPage from "@/pages/CompetitionsPage";
+import DSAPracticePage from "@/pages/DSAPracticePage";
 import ManageCoursesPage from "@/pages/admin/ManageCoursesPage";
 import ManageQuizzesPage from "@/pages/admin/ManageQuizzesPage";
 import ManageMembersPage from "@/pages/admin/ManageMembersPage";
+import ManageDSAPage from "@/pages/admin/ManageDSAPage";
+import ManageBadgesPage from "@/pages/admin/ManageBadgesPage";
+import ManageAchievementsPage from "@/pages/admin/ManageAchievementsPage";
+import AdminProfilesPage from "@/pages/admin/AdminProfilesPage";
 import AnalyticsPage from "@/pages/admin/AnalyticsPage";
 import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
 import NotFound from "@/pages/NotFound";
@@ -41,6 +46,7 @@ const App = () => (
                 <Route path="/dashboard/courses" element={<CoursesPage />} />
                 <Route path="/dashboard/courses/:courseId" element={<CourseDetailPage />} />
                 <Route path="/dashboard/code" element={<CodePage />} />
+                <Route path="/dashboard/dsa" element={<DSAPracticePage />} />
                 <Route path="/dashboard/ai-chat" element={<AiChatPage />} />
                 <Route path="/dashboard/profile" element={<ProfilePage />} />
                 <Route path="/dashboard/badges" element={<BadgesPage />} />
@@ -49,7 +55,11 @@ const App = () => (
                 {/* Admin routes */}
                 <Route path="/dashboard/manage-courses" element={<ManageCoursesPage />} />
                 <Route path="/dashboard/manage-quizzes" element={<ManageQuizzesPage />} />
+                <Route path="/dashboard/manage-dsa" element={<ManageDSAPage />} />
                 <Route path="/dashboard/manage-members" element={<ManageMembersPage />} />
+                <Route path="/dashboard/manage-profiles" element={<AdminProfilesPage />} />
+                <Route path="/dashboard/manage-badges" element={<ManageBadgesPage />} />
+                <Route path="/dashboard/manage-achievements" element={<ManageAchievementsPage />} />
                 <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
                 <Route path="/dashboard/settings" element={<AdminSettingsPage />} />
               </Route>

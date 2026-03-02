@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          parsed_rule: Json | null
+          rule_text: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          parsed_rule?: Json | null
+          rule_text?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          parsed_rule?: Json | null
+          rule_text?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       admin_settings: {
         Row: {
           id: string
@@ -32,6 +62,36 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: string
+        }
+        Relationships: []
+      }
+      badges: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          parsed_rule: Json | null
+          rule_text: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          parsed_rule?: Json | null
+          rule_text?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          parsed_rule?: Json | null
+          rule_text?: string | null
+          title?: string
         }
         Relationships: []
       }
@@ -91,6 +151,89 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      dsa_questions: {
+        Row: {
+          constraints: string | null
+          created_at: string
+          description: string | null
+          difficulty: string
+          id: string
+          language: string
+          sample_input: string | null
+          sample_output: string | null
+          test_cases: Json
+          title: string
+        }
+        Insert: {
+          constraints?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          language?: string
+          sample_input?: string | null
+          sample_output?: string | null
+          test_cases?: Json
+          title: string
+        }
+        Update: {
+          constraints?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          language?: string
+          sample_input?: string | null
+          sample_output?: string | null
+          test_cases?: Json
+          title?: string
+        }
+        Relationships: []
+      }
+      dsa_submissions: {
+        Row: {
+          code: string
+          created_at: string
+          feedback: string | null
+          id: string
+          language: string
+          question_id: string
+          score: number
+          status: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          language?: string
+          question_id: string
+          score?: number
+          status?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          language?: string
+          question_id?: string
+          score?: number
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dsa_submissions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dsa_questions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -164,6 +307,41 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_attempts: {
+        Row: {
+          created_at: string
+          id: string
+          is_correct: boolean
+          quiz_id: string
+          selected_answer: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_correct: boolean
+          quiz_id: string
+          selected_answer: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          quiz_id?: string
+          selected_answer?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quizzes: {
         Row: {
           correct_answer: number
@@ -198,6 +376,88 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          awarded_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          awarded_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          awarded_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_activity: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          awarded_at: string
+          badge_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          awarded_at?: string
+          badge_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          awarded_at?: string
+          badge_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
             referencedColumns: ["id"]
           },
         ]
