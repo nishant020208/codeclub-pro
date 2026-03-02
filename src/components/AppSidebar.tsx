@@ -4,14 +4,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, BookOpen, Code2, User, Trophy, Medal,
   Swords, Bot, Settings, Users, FileText, BarChart3,
-  LogOut, ChevronLeft, ChevronRight
+  LogOut, ChevronLeft, ChevronRight, Terminal, UserCheck, Award
 } from "lucide-react";
 import { useState } from "react";
 
 const memberLinks = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/dashboard/courses", icon: BookOpen, label: "Courses" },
-  { to: "/dashboard/code", icon: Code2, label: "Code" },
+  { to: "/dashboard/dsa", icon: Terminal, label: "DSA Practice" },
+  { to: "/dashboard/code", icon: Code2, label: "Projects" },
   { to: "/dashboard/ai-chat", icon: Bot, label: "AI Chat" },
   { to: "/dashboard/badges", icon: Medal, label: "Badges" },
   { to: "/dashboard/achievements", icon: Trophy, label: "Achievements" },
@@ -23,7 +24,11 @@ const adminLinks = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/dashboard/manage-courses", icon: BookOpen, label: "Courses" },
   { to: "/dashboard/manage-quizzes", icon: FileText, label: "Quizzes" },
+  { to: "/dashboard/manage-dsa", icon: Terminal, label: "DSA" },
   { to: "/dashboard/manage-members", icon: Users, label: "Members" },
+  { to: "/dashboard/manage-profiles", icon: UserCheck, label: "Profiles" },
+  { to: "/dashboard/manage-badges", icon: Medal, label: "Badges" },
+  { to: "/dashboard/manage-achievements", icon: Award, label: "Achievements" },
   { to: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
   { to: "/dashboard/settings", icon: Settings, label: "Settings" },
 ];
