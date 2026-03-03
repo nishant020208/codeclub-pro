@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, BookOpen, Code2, User, Trophy, Medal,
   Swords, Bot, Settings, Users, FileText, BarChart3,
-  LogOut, ChevronLeft, ChevronRight, Terminal, UserCheck, Award
+  LogOut, ChevronLeft, ChevronRight, Terminal, UserCheck, Award, Crown
 } from "lucide-react";
 import { useState } from "react";
 
@@ -13,10 +13,11 @@ const memberLinks = [
   { to: "/dashboard/courses", icon: BookOpen, label: "Courses" },
   { to: "/dashboard/dsa", icon: Terminal, label: "DSA Practice" },
   { to: "/dashboard/code", icon: Code2, label: "Projects" },
+  { to: "/dashboard/leaderboard", icon: Crown, label: "Leaderboard" },
   { to: "/dashboard/ai-chat", icon: Bot, label: "AI Chat" },
   { to: "/dashboard/badges", icon: Medal, label: "Badges" },
   { to: "/dashboard/achievements", icon: Trophy, label: "Achievements" },
-  { to: "/dashboard/competitions", icon: Swords, label: "Competitions" },
+  { to: "/dashboard/competitions", icon: Swords, label: "Contests" },
   { to: "/dashboard/profile", icon: User, label: "Profile" },
 ];
 
@@ -25,6 +26,7 @@ const adminLinks = [
   { to: "/dashboard/manage-courses", icon: BookOpen, label: "Courses" },
   { to: "/dashboard/manage-quizzes", icon: FileText, label: "Quizzes" },
   { to: "/dashboard/manage-dsa", icon: Terminal, label: "DSA" },
+  { to: "/dashboard/manage-contests", icon: Swords, label: "Contests" },
   { to: "/dashboard/manage-members", icon: Users, label: "Members" },
   { to: "/dashboard/manage-profiles", icon: UserCheck, label: "Profiles" },
   { to: "/dashboard/manage-badges", icon: Medal, label: "Badges" },
