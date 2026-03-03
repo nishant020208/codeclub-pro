@@ -17,12 +17,14 @@ import BadgesPage from "@/pages/BadgesPage";
 import AchievementsPage from "@/pages/AchievementsPage";
 import CompetitionsPage from "@/pages/CompetitionsPage";
 import DSAPracticePage from "@/pages/DSAPracticePage";
+import LeaderboardPage from "@/pages/LeaderboardPage";
 import ManageCoursesPage from "@/pages/admin/ManageCoursesPage";
 import ManageQuizzesPage from "@/pages/admin/ManageQuizzesPage";
 import ManageMembersPage from "@/pages/admin/ManageMembersPage";
 import ManageDSAPage from "@/pages/admin/ManageDSAPage";
 import ManageBadgesPage from "@/pages/admin/ManageBadgesPage";
 import ManageAchievementsPage from "@/pages/admin/ManageAchievementsPage";
+import ManageContestsPage from "@/pages/admin/ManageContestsPage";
 import AdminProfilesPage from "@/pages/admin/AdminProfilesPage";
 import AnalyticsPage from "@/pages/admin/AnalyticsPage";
 import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
@@ -52,6 +54,7 @@ const App = () => (
                 <Route path="/dashboard/badges" element={<BadgesPage />} />
                 <Route path="/dashboard/achievements" element={<AchievementsPage />} />
                 <Route path="/dashboard/competitions" element={<CompetitionsPage />} />
+                <Route path="/dashboard/leaderboard" element={<LeaderboardPage />} />
                 {/* Admin routes */}
                 <Route path="/dashboard/manage-courses" element={<ManageCoursesPage />} />
                 <Route path="/dashboard/manage-quizzes" element={<ManageQuizzesPage />} />
@@ -60,6 +63,7 @@ const App = () => (
                 <Route path="/dashboard/manage-profiles" element={<AdminProfilesPage />} />
                 <Route path="/dashboard/manage-badges" element={<ManageBadgesPage />} />
                 <Route path="/dashboard/manage-achievements" element={<ManageAchievementsPage />} />
+                <Route path="/dashboard/manage-contests" element={<ManageContestsPage />} />
                 <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
                 <Route path="/dashboard/settings" element={<AdminSettingsPage />} />
               </Route>
