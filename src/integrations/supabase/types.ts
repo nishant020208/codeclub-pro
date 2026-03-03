@@ -101,23 +101,79 @@ export type Database = {
           deadline: string | null
           description: string | null
           id: string
+          rules: string | null
+          start_time: string | null
+          status: string | null
           title: string
+          xp_reward: number | null
         }
         Insert: {
           created_at?: string
           deadline?: string | null
           description?: string | null
           id?: string
+          rules?: string | null
+          start_time?: string | null
+          status?: string | null
           title: string
+          xp_reward?: number | null
         }
         Update: {
           created_at?: string
           deadline?: string | null
           description?: string | null
           id?: string
+          rules?: string | null
+          start_time?: string | null
+          status?: string | null
           title?: string
+          xp_reward?: number | null
         }
         Relationships: []
+      }
+      contest_submissions: {
+        Row: {
+          competition_id: string
+          created_at: string
+          github_link: string | null
+          id: string
+          notes: string | null
+          score: number | null
+          status: string
+          submission_url: string | null
+          user_id: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          github_link?: string | null
+          id?: string
+          notes?: string | null
+          score?: number | null
+          status?: string
+          submission_url?: string | null
+          user_id: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          github_link?: string | null
+          id?: string
+          notes?: string | null
+          score?: number | null
+          status?: string
+          submission_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contest_submissions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       courses: {
         Row: {
@@ -268,16 +324,80 @@ export type Database = {
         }
         Relationships: []
       }
+      project_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_comments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_likes: {
+        Row: {
+          created_at: string
+          id: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_likes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           created_at: string
           description: string | null
           github_link: string | null
           id: string
+          is_featured: boolean | null
+          likes_count: number | null
           mvp_link: string | null
           name: string
           screenshots: string[] | null
           team_members: string[] | null
+          tech_stack: string[] | null
           updated_at: string
           user_id: string
         }
@@ -286,10 +406,13 @@ export type Database = {
           description?: string | null
           github_link?: string | null
           id?: string
+          is_featured?: boolean | null
+          likes_count?: number | null
           mvp_link?: string | null
           name: string
           screenshots?: string[] | null
           team_members?: string[] | null
+          tech_stack?: string[] | null
           updated_at?: string
           user_id: string
         }
@@ -298,10 +421,13 @@ export type Database = {
           description?: string | null
           github_link?: string | null
           id?: string
+          is_featured?: boolean | null
+          likes_count?: number | null
           mvp_link?: string | null
           name?: string
           screenshots?: string[] | null
           team_members?: string[] | null
+          tech_stack?: string[] | null
           updated_at?: string
           user_id?: string
         }
@@ -498,6 +624,33 @@ export type Database = {
           created_at?: string
           id?: string
           user_code?: string
+        }
+        Relationships: []
+      }
+      xp_logs: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          metadata: Json | null
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          reason: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          reason?: string
+          user_id?: string
         }
         Relationships: []
       }
