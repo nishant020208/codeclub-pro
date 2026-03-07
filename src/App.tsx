@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import DashboardPage from "@/pages/DashboardPage";
 import CoursesPage from "@/pages/CoursesPage";
@@ -18,6 +19,10 @@ import AchievementsPage from "@/pages/AchievementsPage";
 import CompetitionsPage from "@/pages/CompetitionsPage";
 import DSAPracticePage from "@/pages/DSAPracticePage";
 import LeaderboardPage from "@/pages/LeaderboardPage";
+import EventsPage from "@/pages/EventsPage";
+import AnnouncementsPage from "@/pages/AnnouncementsPage";
+import ResourcesPage from "@/pages/ResourcesPage";
+import CertificatesPage from "@/pages/CertificatesPage";
 import ManageCoursesPage from "@/pages/admin/ManageCoursesPage";
 import ManageQuizzesPage from "@/pages/admin/ManageQuizzesPage";
 import ManageMembersPage from "@/pages/admin/ManageMembersPage";
@@ -25,6 +30,9 @@ import ManageDSAPage from "@/pages/admin/ManageDSAPage";
 import ManageBadgesPage from "@/pages/admin/ManageBadgesPage";
 import ManageAchievementsPage from "@/pages/admin/ManageAchievementsPage";
 import ManageContestsPage from "@/pages/admin/ManageContestsPage";
+import ManageEventsPage from "@/pages/admin/ManageEventsPage";
+import ManageAnnouncementsPage from "@/pages/admin/ManageAnnouncementsPage";
+import ManageResourcesPage from "@/pages/admin/ManageResourcesPage";
 import AdminProfilesPage from "@/pages/admin/AdminProfilesPage";
 import AnalyticsPage from "@/pages/admin/AnalyticsPage";
 import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
@@ -40,7 +48,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<DashboardLayout />}>
@@ -55,10 +63,18 @@ const App = () => (
                 <Route path="/dashboard/achievements" element={<AchievementsPage />} />
                 <Route path="/dashboard/competitions" element={<CompetitionsPage />} />
                 <Route path="/dashboard/leaderboard" element={<LeaderboardPage />} />
+                <Route path="/dashboard/events" element={<EventsPage />} />
+                <Route path="/dashboard/announcements" element={<AnnouncementsPage />} />
+                <Route path="/dashboard/resources" element={<ResourcesPage />} />
+                <Route path="/dashboard/certificates" element={<CertificatesPage />} />
                 {/* Admin routes */}
                 <Route path="/dashboard/manage-courses" element={<ManageCoursesPage />} />
                 <Route path="/dashboard/manage-quizzes" element={<ManageQuizzesPage />} />
                 <Route path="/dashboard/manage-dsa" element={<ManageDSAPage />} />
+                <Route path="/dashboard/manage-contests" element={<ManageContestsPage />} />
+                <Route path="/dashboard/manage-events" element={<ManageEventsPage />} />
+                <Route path="/dashboard/manage-announcements" element={<ManageAnnouncementsPage />} />
+                <Route path="/dashboard/manage-resources" element={<ManageResourcesPage />} />
                 <Route path="/dashboard/manage-members" element={<ManageMembersPage />} />
                 <Route path="/dashboard/manage-profiles" element={<AdminProfilesPage />} />
                 <Route path="/dashboard/manage-badges" element={<ManageBadgesPage />} />
