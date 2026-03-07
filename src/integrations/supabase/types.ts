@@ -65,6 +65,65 @@ export type Database = {
         }
         Relationships: []
       }
+      announcement_reads: {
+        Row: {
+          announcement_id: string
+          id: string
+          read_at: string
+          user_id: string
+        }
+        Insert: {
+          announcement_id: string
+          id?: string
+          read_at?: string
+          user_id: string
+        }
+        Update: {
+          announcement_id?: string
+          id?: string
+          read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcement_reads_announcement_id_fkey"
+            columns: ["announcement_id"]
+            isOneToOne: false
+            referencedRelation: "announcements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      announcements: {
+        Row: {
+          category: string
+          content: string | null
+          created_at: string
+          created_by: string
+          id: string
+          is_pinned: boolean
+          title: string
+        }
+        Insert: {
+          category?: string
+          content?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          is_pinned?: boolean
+          title: string
+        }
+        Update: {
+          category?: string
+          content?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_pinned?: boolean
+          title?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           created_at: string
@@ -92,6 +151,36 @@ export type Database = {
           parsed_rule?: Json | null
           rule_text?: string | null
           title?: string
+        }
+        Relationships: []
+      }
+      certificates: {
+        Row: {
+          cert_type: string
+          description: string | null
+          id: string
+          issued_at: string
+          metadata: Json | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          cert_type?: string
+          description?: string | null
+          id?: string
+          issued_at?: string
+          metadata?: Json | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          cert_type?: string
+          description?: string | null
+          id?: string
+          issued_at?: string
+          metadata?: Json | null
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -290,6 +379,74 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      event_registrations: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string | null
+          id: string
+          location: string | null
+          max_participants: number | null
+          meeting_link: string | null
+          speaker: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          location?: string | null
+          max_participants?: number | null
+          meeting_link?: string | null
+          speaker?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          location?: string | null
+          max_participants?: number | null
+          meeting_link?: string | null
+          speaker?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -505,6 +662,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      resources: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          resource_type: string
+          title: string
+          url: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          resource_type?: string
+          title: string
+          url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          resource_type?: string
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
       }
       user_achievements: {
         Row: {
