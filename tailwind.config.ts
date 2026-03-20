@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        sans: ["JetBrains Mono", "Fira Code", "monospace"],
+        mono: ["JetBrains Mono", "Fira Code", "monospace"],
+        display: ["Space Grotesk", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -62,12 +63,12 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         neon: {
-          cyan: "hsl(var(--neon-cyan))",
-          purple: "hsl(var(--neon-purple))",
-          pink: "hsl(var(--neon-pink))",
-          blue: "hsl(var(--neon-blue))",
           green: "hsl(var(--neon-green))",
-          orange: "hsl(var(--neon-orange))",
+          cyan: "hsl(var(--neon-cyan))",
+          lime: "hsl(var(--neon-lime))",
+          amber: "hsl(var(--neon-amber))",
+          red: "hsl(var(--neon-red))",
+          blue: "hsl(var(--neon-blue))",
         },
       },
       borderRadius: {
