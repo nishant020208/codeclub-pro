@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Code2, Trophy, Users, TrendingUp, Zap, Star, Medal } from "lucide-react";
+import { Terminal, Code2, Trophy, Users, TrendingUp, Zap, Star, Medal, Flame, Swords, BookOpen } from "lucide-react";
 
-const StatCard: React.FC<{ icon: React.ElementType; label: string; value: string; gradient?: string }> = ({
-  icon: Icon, label, value, gradient
+const StatCard: React.FC<{ icon: React.ElementType; label: string; value: string; color?: string }> = ({
+  icon: Icon, label, value, color
 }) => (
-  <div className="neon-card rounded-2xl p-6 animate-fade-in">
+  <div className="terminal-card rounded-lg p-5 animate-fade-in">
     <div className="flex items-start justify-between">
       <div>
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="text-3xl font-bold mt-1 text-foreground animate-count-up">{value}</p>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">{label}</p>
+        <p className="text-2xl font-bold mt-1 text-primary animate-count-up">{value}</p>
       </div>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: gradient ? `${gradient}15` : "hsla(265, 90%, 65%, 0.1)" }}>
-        <Icon className="w-5 h-5" style={{ color: gradient || "hsl(var(--primary))" }} />
+      <div className="w-9 h-9 rounded-md flex items-center justify-center bg-primary/10 border border-primary/20">
+        <Icon className="w-4 h-4 text-primary" />
       </div>
     </div>
   </div>
@@ -24,54 +24,60 @@ const MemberDashboard: React.FC = () => {
   const [courseCount, setCourseCount] = useState(0);
   const [myXp, setMyXp] = useState(0);
   const [badgeCount, setBadgeCount] = useState(0);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
+    if (!user) return;
     Promise.all([
       supabase.from("courses").select("id", { count: "exact", head: true }),
-      user ? supabase.from("xp_logs").select("amount").eq("user_id", user.id) : Promise.resolve({ data: [] }),
-      user ? supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", user.id) : Promise.resolve({ count: 0 }),
-    ]).then(([c, xp, b]) => {
+      supabase.from("xp_logs").select("amount").eq("user_id", user.id),
+      supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("streaks").select("current_streak").eq("user_id", user.id).maybeSingle(),
+    ]).then(([c, xp, b, s]) => {
       setCourseCount(c.count || 0);
-      setMyXp(((xp as any).data || []).reduce((s: number, x: any) => s + x.amount, 0));
+      setMyXp(((xp as any).data || []).reduce((sum: number, x: any) => sum + x.amount, 0));
       setBadgeCount((b as any).count || 0);
+      setStreak((s as any).data?.current_streak || 0);
     });
   }, [user]);
 
-  const colors = {
-    purple: "hsl(265, 90%, 65%)",
-    cyan: "hsl(190, 95%, 50%)",
-    pink: "hsl(330, 90%, 60%)",
-    orange: "hsl(25, 95%, 55%)",
-  };
+  const quickActions = [
+    { icon: Terminal, title: "$ solve", desc: "DSA Challenges", href: "/dashboard/dsa" },
+    { icon: Swords, title: "$ battle", desc: "1v1 Peer Battle", href: "/dashboard/battles" },
+    { icon: Trophy, title: "$ rank", desc: "Leaderboard", href: "/dashboard/leaderboard" },
+    { icon: Code2, title: "$ showcase", desc: "My Projects", href: "/dashboard/code" },
+    { icon: BookOpen, title: "$ learn", desc: "Courses", href: "/dashboard/courses" },
+    { icon: Flame, title: "$ streak", desc: `${streak} day streak`, href: "/dashboard/dsa" },
+  ];
 
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">
-          Welcome back, <span className="gradient-text-neon">{userCode}</span>
+        <p className="text-sm text-muted-foreground font-mono mb-1">$ welcome --user</p>
+        <h1 className="text-2xl font-bold text-foreground">
+          Hello, <span className="text-primary">{userCode}</span>
         </h1>
-        <p className="text-muted-foreground mt-1">Here's your coding journey overview</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Star} label="Total XP" value={String(myXp)} gradient={colors.purple} />
-        <StatCard icon={BookOpen} label="Courses" value={String(courseCount)} gradient={colors.cyan} />
-        <StatCard icon={Medal} label="Badges" value={String(badgeCount)} gradient={colors.pink} />
-        <StatCard icon={Zap} label="Streak" value="1 day" gradient={colors.orange} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard icon={Star} label="total_xp" value={String(myXp)} />
+        <StatCard icon={Flame} label="streak" value={`${streak}d`} />
+        <StatCard icon={Medal} label="badges" value={String(badgeCount)} />
+        <StatCard icon={BookOpen} label="courses" value={String(courseCount)} />
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { icon: BookOpen, title: "Browse Courses", desc: "Start learning new skills", href: "/dashboard/courses", color: colors.cyan },
-            { icon: Code2, title: "Add Project", desc: "Showcase your work", href: "/dashboard/code", color: colors.purple },
-            { icon: Trophy, title: "Competitions", desc: "Join coding challenges", href: "/dashboard/competitions", color: colors.pink },
-          ].map((item) => (
-            <a key={item.title} href={item.href} className="neon-card rounded-2xl p-5 group">
-              <item.icon className="w-8 h-8 mb-3 group-hover:scale-110 transition-transform" style={{ color: item.color }} />
-              <h3 className="font-semibold text-foreground">{item.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
+        <p className="text-sm text-muted-foreground font-mono mb-3">$ ls ./quick-actions</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {quickActions.map((item) => (
+            <a key={item.title} href={item.href} className="terminal-card rounded-lg p-4 group hover:border-primary/30 transition-all">
+              <div className="flex items-center gap-3">
+                <item.icon className="w-5 h-5 text-primary shrink-0" />
+                <div>
+                  <h3 className="font-bold text-foreground text-sm group-hover:text-primary transition-colors">{item.title}</h3>
+                  <p className="text-xs text-muted-foreground">{item.desc}</p>
+                </div>
+              </div>
             </a>
           ))}
         </div>
@@ -81,7 +87,7 @@ const MemberDashboard: React.FC = () => {
 };
 
 const AdminDashboard: React.FC = () => {
-  const [stats, setStats] = useState({ courses: 0, members: 0, quizzes: 0, contests: 0 });
+  const [stats, setStats] = useState({ courses: 0, members: 0, quizzes: 0, contests: 0, cheats: 0 });
 
   useEffect(() => {
     Promise.all([
@@ -89,32 +95,33 @@ const AdminDashboard: React.FC = () => {
       supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase.from("quizzes").select("id", { count: "exact", head: true }),
       supabase.from("competitions").select("id", { count: "exact", head: true }),
-    ]).then(([c, m, q, co]) => {
-      setStats({ courses: c.count || 0, members: m.count || 0, quizzes: q.count || 0, contests: co.count || 0 });
+      supabase.from("cheat_logs").select("id", { count: "exact", head: true }),
+    ]).then(([c, m, q, co, ch]) => {
+      setStats({
+        courses: c.count || 0,
+        members: m.count || 0,
+        quizzes: q.count || 0,
+        contests: co.count || 0,
+        cheats: (ch as any).count || 0,
+      });
     });
   }, []);
-
-  const colors = {
-    purple: "hsl(265, 90%, 65%)",
-    cyan: "hsl(190, 95%, 50%)",
-    pink: "hsl(330, 90%, 60%)",
-    orange: "hsl(25, 95%, 55%)",
-  };
 
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">
-          Admin <span className="gradient-text-neon">Dashboard</span>
+        <p className="text-sm text-muted-foreground font-mono mb-1">$ sudo dashboard --admin</p>
+        <h1 className="text-2xl font-bold text-foreground">
+          Admin <span className="text-primary">Control Panel</span>
         </h1>
-        <p className="text-muted-foreground mt-1">Manage your coding club</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={BookOpen} label="Total Courses" value={String(stats.courses)} gradient={colors.cyan} />
-        <StatCard icon={Users} label="Total Members" value={String(stats.members)} gradient={colors.purple} />
-        <StatCard icon={TrendingUp} label="Total Quizzes" value={String(stats.quizzes)} gradient={colors.pink} />
-        <StatCard icon={Trophy} label="Contests" value={String(stats.contests)} gradient={colors.orange} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <StatCard icon={BookOpen} label="courses" value={String(stats.courses)} />
+        <StatCard icon={Users} label="members" value={String(stats.members)} />
+        <StatCard icon={TrendingUp} label="quizzes" value={String(stats.quizzes)} />
+        <StatCard icon={Trophy} label="contests" value={String(stats.contests)} />
+        <StatCard icon={Zap} label="cheat_alerts" value={String(stats.cheats)} />
       </div>
     </div>
   );
