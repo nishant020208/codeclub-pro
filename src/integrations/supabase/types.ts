@@ -154,6 +154,62 @@ export type Database = {
         }
         Relationships: []
       }
+      battles: {
+        Row: {
+          challenger_code: string | null
+          challenger_id: string
+          challenger_score: number | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          opponent_code: string | null
+          opponent_id: string | null
+          opponent_score: number | null
+          question_id: string | null
+          started_at: string | null
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          challenger_code?: string | null
+          challenger_id: string
+          challenger_score?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          opponent_code?: string | null
+          opponent_id?: string | null
+          opponent_score?: number | null
+          question_id?: string | null
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          challenger_code?: string | null
+          challenger_id?: string
+          challenger_score?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          opponent_code?: string | null
+          opponent_id?: string | null
+          opponent_score?: number | null
+          question_id?: string | null
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battles_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dsa_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certificates: {
         Row: {
           cert_type: string
@@ -180,6 +236,33 @@ export type Database = {
           issued_at?: string
           metadata?: Json | null
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      cheat_logs: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          page: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          page?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          page?: string | null
           user_id?: string
         }
         Relationships: []
@@ -448,13 +531,131 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_posts: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          id: string
+          question_id: string | null
+          title: string
+          upvotes: number
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          question_id?: string | null
+          title: string
+          upvotes?: number
+          user_id: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          question_id?: string | null
+          title?: string
+          upvotes?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_posts_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dsa_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_replies: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          upvotes: number
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          upvotes?: number
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          upvotes?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_replies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_upvotes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string | null
+          reply_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          reply_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          reply_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_upvotes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_upvotes_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "forum_replies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
+          branch: string | null
           created_at: string
           display_name: string | null
+          github_username: string | null
           id: string
+          skills: string[] | null
           updated_at: string
           user_code: string
           user_id: string
@@ -462,9 +663,12 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          branch?: string | null
           created_at?: string
           display_name?: string | null
+          github_username?: string | null
           id?: string
+          skills?: string[] | null
           updated_at?: string
           user_code: string
           user_id: string
@@ -472,9 +676,12 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          branch?: string | null
           created_at?: string
           display_name?: string | null
+          github_username?: string | null
           id?: string
+          skills?: string[] | null
           updated_at?: string
           user_code?: string
           user_id?: string
@@ -690,6 +897,92 @@ export type Database = {
           resource_type?: string
           title?: string
           url?: string | null
+        }
+        Relationships: []
+      }
+      streaks: {
+        Row: {
+          current_streak: number
+          id: string
+          last_activity_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
         }
         Relationships: []
       }

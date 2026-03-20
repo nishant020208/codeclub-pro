@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/layouts/DashboardLayout";
@@ -23,6 +23,10 @@ import EventsPage from "@/pages/EventsPage";
 import AnnouncementsPage from "@/pages/AnnouncementsPage";
 import ResourcesPage from "@/pages/ResourcesPage";
 import CertificatesPage from "@/pages/CertificatesPage";
+import BattleModePage from "@/pages/BattleModePage";
+import ForumPage from "@/pages/ForumPage";
+import TeamsPage from "@/pages/TeamsPage";
+import ResumeBuilderPage from "@/pages/ResumeBuilderPage";
 import ManageCoursesPage from "@/pages/admin/ManageCoursesPage";
 import ManageQuizzesPage from "@/pages/admin/ManageQuizzesPage";
 import ManageMembersPage from "@/pages/admin/ManageMembersPage";
@@ -36,6 +40,7 @@ import ManageResourcesPage from "@/pages/admin/ManageResourcesPage";
 import AdminProfilesPage from "@/pages/admin/AdminProfilesPage";
 import AnalyticsPage from "@/pages/admin/AnalyticsPage";
 import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
+import CheatLogsPage from "@/pages/admin/CheatLogsPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +62,10 @@ const App = () => (
                 <Route path="/dashboard/courses/:courseId" element={<CourseDetailPage />} />
                 <Route path="/dashboard/code" element={<CodePage />} />
                 <Route path="/dashboard/dsa" element={<DSAPracticePage />} />
+                <Route path="/dashboard/battles" element={<BattleModePage />} />
+                <Route path="/dashboard/forum" element={<ForumPage />} />
+                <Route path="/dashboard/teams" element={<TeamsPage />} />
+                <Route path="/dashboard/resume" element={<ResumeBuilderPage />} />
                 <Route path="/dashboard/ai-chat" element={<AiChatPage />} />
                 <Route path="/dashboard/profile" element={<ProfilePage />} />
                 <Route path="/dashboard/badges" element={<BadgesPage />} />
@@ -79,7 +88,7 @@ const App = () => (
                 <Route path="/dashboard/manage-profiles" element={<AdminProfilesPage />} />
                 <Route path="/dashboard/manage-badges" element={<ManageBadgesPage />} />
                 <Route path="/dashboard/manage-achievements" element={<ManageAchievementsPage />} />
-                <Route path="/dashboard/manage-contests" element={<ManageContestsPage />} />
+                <Route path="/dashboard/cheat-logs" element={<CheatLogsPage />} />
                 <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
                 <Route path="/dashboard/settings" element={<AdminSettingsPage />} />
               </Route>
