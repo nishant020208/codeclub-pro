@@ -82,6 +82,9 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
 
+      {/* Activity Heatmap */}
+      <ActivityHeatmap />
+
       {/* Profile form */}
       <div className="terminal-card rounded-lg p-6 space-y-5">
         <div className="flex items-center gap-4 pb-4 border-b border-border">
