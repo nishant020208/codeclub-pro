@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Terminal, Code2, Trophy, Users, TrendingUp, Zap, Star, Medal, Flame, Swords, BookOpen } from "lucide-react";
+import DailyChallenge from "@/components/DailyChallenge";
 
 const StatCard: React.FC<{ icon: React.ElementType; label: string; value: string; color?: string }> = ({
   icon: Icon, label, value, color
