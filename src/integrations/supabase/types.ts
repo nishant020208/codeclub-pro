@@ -380,8 +380,41 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_challenges: {
+        Row: {
+          bonus_xp: number
+          challenge_date: string
+          created_at: string
+          id: string
+          question_id: string
+        }
+        Insert: {
+          bonus_xp?: number
+          challenge_date?: string
+          created_at?: string
+          id?: string
+          question_id: string
+        }
+        Update: {
+          bonus_xp?: number
+          challenge_date?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_challenges_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dsa_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dsa_questions: {
         Row: {
+          company_tags: string[] | null
           constraints: string | null
           created_at: string
           description: string | null
@@ -394,6 +427,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          company_tags?: string[] | null
           constraints?: string | null
           created_at?: string
           description?: string | null
@@ -406,6 +440,7 @@ export type Database = {
           title: string
         }
         Update: {
+          company_tags?: string[] | null
           constraints?: string | null
           created_at?: string
           description?: string | null
