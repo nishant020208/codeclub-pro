@@ -67,6 +67,9 @@ const MemberDashboard: React.FC = () => {
         <StatCard icon={BookOpen} label="courses" value={String(courseCount)} />
       </div>
 
+      {/* Daily Challenge */}
+      <DailyChallenge />
+
       <div>
         <p className="text-sm text-muted-foreground font-mono mb-3">$ ls ./quick-actions</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
