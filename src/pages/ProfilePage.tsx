@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { User, Save, Github, Code2, Trophy, Flame } from "lucide-react";
-import { useEffect } from "react";
+import ActivityHeatmap from "@/components/ActivityHeatmap";
 
 const ProfilePage: React.FC = () => {
   const { user, userCode } = useAuth();
