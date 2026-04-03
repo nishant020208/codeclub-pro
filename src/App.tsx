@@ -44,6 +44,7 @@ const AdminProfilesPage = React.lazy(() => import("@/pages/admin/AdminProfilesPa
 const AnalyticsPage = React.lazy(() => import("@/pages/admin/AnalyticsPage"));
 const AdminSettingsPage = React.lazy(() => import("@/pages/admin/AdminSettingsPage"));
 const CheatLogsPage = React.lazy(() => import("@/pages/admin/CheatLogsPage"));
+const ResetPasswordPage = React.lazy(() => import("@/pages/ResetPasswordPage"));
 const NotFound = React.lazy(() => import("@/pages/NotFound"));
 
 const PageLoader = () => (
