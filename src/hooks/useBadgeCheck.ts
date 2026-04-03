@@ -23,9 +23,14 @@ export const useBadgeCheck = () => {
 
       if (!resp.ok) return;
       const data = await resp.json();
-      if (data.count > 0) {
-        data.awarded.forEach((title: string) => {
+      if (data.badge_count > 0) {
+        data.awarded_badges.forEach((title: string) => {
           toast.success(`🏅 Badge Earned: ${title}!`, { duration: 5000 });
+        });
+      }
+      if (data.achievement_count > 0) {
+        data.awarded_achievements.forEach((title: string) => {
+          toast.success(`🏆 Achievement Unlocked: ${title}!`, { duration: 5000 });
         });
       }
     } catch (e) {
