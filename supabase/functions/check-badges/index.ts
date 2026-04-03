@@ -17,84 +17,141 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get user from token
     const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!);
     const { data: { user }, error: userError } = await anonClient.auth.getUser(authHeader.replace("Bearer ", ""));
     if (userError || !user) throw new Error("Unauthorized");
 
     const userId = user.id;
 
-    // Get all badges and user's existing badges
-    const [{ data: allBadges }, { data: userBadges }, { data: quizAttempts }, { data: dsaSubs }, { data: xpLogs }, { data: streak }] = await Promise.all([
+    // Fetch all needed data in parallel
+    const [
+      { data: allBadges },
+      { data: userBadges },
+      { data: quizAttempts },
+      { data: dsaSubs },
+      { data: xpLogs },
+      { data: streak },
+      { data: courses },
+      { data: quizzes },
+      { data: allAchievements },
+      { data: userAchievements },
+    ] = await Promise.all([
       supabase.from("badges").select("*"),
       supabase.from("user_badges").select("badge_id").eq("user_id", userId),
       supabase.from("quiz_attempts").select("quiz_id, is_correct").eq("user_id", userId),
       supabase.from("dsa_submissions").select("question_id, score, status").eq("user_id", userId),
       supabase.from("xp_logs").select("amount").eq("user_id", userId),
       supabase.from("streaks").select("current_streak, longest_streak").eq("user_id", userId).maybeSingle(),
+      supabase.from("courses").select("id, title"),
+      supabase.from("quizzes").select("id, course_id"),
+      supabase.from("achievements").select("*"),
+      supabase.from("user_achievements").select("achievement_id").eq("user_id", userId),
     ]);
 
-    const earnedIds = new Set((userBadges || []).map((b: any) => b.badge_id));
+    const earnedBadgeIds = new Set((userBadges || []).map((b: any) => b.badge_id));
+    const earnedAchIds = new Set((userAchievements || []).map((a: any) => a.achievement_id));
+
+    // Compute stats
     const totalXp = (xpLogs || []).reduce((s: number, x: any) => s + x.amount, 0);
-    const correctQuizzes = (quizAttempts || []).filter((q: any) => q.is_correct).length;
-    const totalQuizzes = (quizAttempts || []).length;
-    const acceptedDSA = (dsaSubs || []).filter((s: any) => s.status === "accepted" || s.score >= 70).length;
-    const totalDSA = new Set((dsaSubs || []).map((s: any) => s.question_id)).size;
+    const correctQuizIds = new Set((quizAttempts || []).filter((q: any) => q.is_correct).map((q: any) => q.quiz_id));
+    const totalCorrectQuizzes = correctQuizIds.size;
     const currentStreak = streak?.current_streak || 0;
 
-    const newBadges: string[] = [];
+    // DSA: count unique questions with accepted/high-score submissions
+    const acceptedQuestions = new Set<string>();
+    for (const s of (dsaSubs || [])) {
+      if (s.status === "accepted" || s.score >= 70) {
+        acceptedQuestions.add(s.question_id);
+      }
+    }
+    const totalAcceptedDSA = acceptedQuestions.size;
 
-    for (const badge of (allBadges || [])) {
-      if (earnedIds.has(badge.id)) continue;
+    // Build course title -> course id mapping
+    const courseByTitle: Record<string, string> = {};
+    const courseById: Record<string, string> = {};
+    for (const c of (courses || [])) {
+      courseByTitle[c.title] = c.id;
+      courseById[c.id] = c.title;
+    }
 
-      const rule = badge.parsed_rule as any;
-      if (!rule || !rule.type) continue;
+    // Build course_id -> quiz_ids mapping
+    const quizzesByCourse: Record<string, string[]> = {};
+    for (const q of (quizzes || [])) {
+      if (!quizzesByCourse[q.course_id]) quizzesByCourse[q.course_id] = [];
+      quizzesByCourse[q.course_id].push(q.id);
+    }
 
-      let earned = false;
+    // Helper: check if user completed enough quizzes for a specific course
+    const getCorrectQuizzesForCourse = (courseTitle: string): number => {
+      // Find course by title (fuzzy match)
+      let courseId: string | null = null;
+      for (const [title, id] of Object.entries(courseByTitle)) {
+        if (title.toLowerCase().includes(courseTitle.toLowerCase()) ||
+            courseTitle.toLowerCase().includes(title.toLowerCase())) {
+          courseId = id;
+          break;
+        }
+      }
+      if (!courseId) return 0;
+      const courseQuizIds = quizzesByCourse[courseId] || [];
+      return courseQuizIds.filter(qid => correctQuizIds.has(qid)).length;
+    };
+
+    // Evaluate badge condition
+    const evaluateRule = (rule: any): boolean => {
+      if (!rule || !rule.type) return false;
+      const minCount = rule.min_count || rule.count || 0;
 
       switch (rule.type) {
-        case "quiz_count":
-          earned = correctQuizzes >= (rule.count || 1);
-          break;
+        case "quiz_count": {
+          if (rule.course_title) {
+            // Course-specific quiz badge
+            const completed = getCorrectQuizzesForCourse(rule.course_title);
+            return completed >= minCount;
+          }
+          // General quiz count
+          return totalCorrectQuizzes >= minCount;
+        }
         case "dsa_count":
-          earned = acceptedDSA >= (rule.count || 1);
-          break;
-        case "dsa_solved":
-          earned = totalDSA >= (rule.count || 1);
-          break;
+          return totalAcceptedDSA >= minCount;
         case "xp_total":
-          earned = totalXp >= (rule.amount || 100);
-          break;
+          return totalXp >= (rule.min_xp || rule.amount || 0);
         case "streak":
-          earned = currentStreak >= (rule.days || 7);
-          break;
-        case "quiz_score":
-          // Check if user completed all quizzes for a specific topic/course with passing score
-          earned = correctQuizzes >= (rule.count || 5);
-          break;
-        case "first_submission":
-          earned = totalDSA >= 1;
-          break;
-        case "perfect_score":
-          earned = (dsaSubs || []).some((s: any) => s.score === 100);
-          break;
+          return currentStreak >= (rule.min_streak || rule.days || 0);
         default:
-          // Try keyword matching in rule_text
-          const ruleText = (badge.rule_text || "").toLowerCase();
-          if (ruleText.includes("quiz") && correctQuizzes > 0) earned = true;
-          if (ruleText.includes("dsa") && acceptedDSA > 0) earned = true;
-          if (ruleText.includes("streak") && currentStreak >= 3) earned = true;
-          if (ruleText.includes("xp") && totalXp >= 50) earned = true;
-          break;
+          return false;
       }
+    };
 
-      if (earned) {
+    const newBadges: string[] = [];
+    const newAchievements: string[] = [];
+
+    // Award badges
+    for (const badge of (allBadges || [])) {
+      if (earnedBadgeIds.has(badge.id)) continue;
+      const rule = badge.parsed_rule as any;
+      if (evaluateRule(rule)) {
         const { error } = await supabase.from("user_badges").insert({ user_id: userId, badge_id: badge.id });
         if (!error) newBadges.push(badge.title);
       }
     }
 
-    return new Response(JSON.stringify({ awarded: newBadges, count: newBadges.length }), {
+    // Award achievements (same rule engine)
+    for (const ach of (allAchievements || [])) {
+      if (earnedAchIds.has(ach.id)) continue;
+      const rule = ach.parsed_rule as any;
+      if (evaluateRule(rule)) {
+        const { error } = await supabase.from("user_achievements").insert({ user_id: userId, achievement_id: ach.id });
+        if (!error) newAchievements.push(ach.title);
+      }
+    }
+
+    return new Response(JSON.stringify({
+      awarded_badges: newBadges,
+      awarded_achievements: newAchievements,
+      badge_count: newBadges.length,
+      achievement_count: newAchievements.length,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
