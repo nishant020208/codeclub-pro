@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import AppSidebar from "@/components/AppSidebar";
 import NotificationBell from "@/components/NotificationBell";
 import { Menu, Terminal } from "lucide-react";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,7 +29,10 @@ const DashboardLayout: React.FC = () => {
               <span className="text-xs font-bold"><span className="text-primary">CC</span>Pro</span>
             </div>
           </div>
-          <NotificationBell />
+          <div className="flex items-center gap-2">
+            <ThemeSwitcher />
+            <NotificationBell />
+          </div>
         </header>
         <main className="p-3 sm:p-5 lg:p-6">
           <Outlet />
