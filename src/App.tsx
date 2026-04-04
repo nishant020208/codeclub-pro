@@ -74,6 +74,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ThemeProvider>
         <AuthProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
