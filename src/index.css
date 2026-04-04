@@ -5,37 +5,28 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @layer base {
-  :root {
+  /* Default: Hacker Green */
+  :root, [data-theme="hacker"] {
     --background: 120 8% 4%;
     --foreground: 120 60% 80%;
-
     --card: 120 8% 7%;
     --card-foreground: 120 60% 80%;
-
     --popover: 120 8% 7%;
     --popover-foreground: 120 60% 80%;
-
     --primary: 120 100% 40%;
     --primary-foreground: 120 8% 4%;
-
     --secondary: 120 10% 10%;
     --secondary-foreground: 120 40% 65%;
-
     --muted: 120 8% 12%;
     --muted-foreground: 120 15% 40%;
-
     --accent: 160 100% 40%;
     --accent-foreground: 120 8% 4%;
-
     --destructive: 0 80% 50%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 120 20% 12%;
     --input: 120 15% 12%;
     --ring: 120 100% 40%;
-
     --radius: 0.5rem;
-
     --sidebar-background: 120 8% 5%;
     --sidebar-foreground: 120 40% 65%;
     --sidebar-primary: 120 100% 40%;
@@ -44,20 +35,106 @@
     --sidebar-accent-foreground: 120 60% 80%;
     --sidebar-border: 120 20% 10%;
     --sidebar-ring: 120 100% 40%;
-
     --neon-green: 120 100% 40%;
     --neon-cyan: 160 100% 40%;
     --neon-lime: 90 100% 45%;
     --neon-amber: 45 100% 50%;
     --neon-red: 0 100% 50%;
     --neon-blue: 200 100% 50%;
-
     --terminal-green: #00cc33;
     --terminal-dim: #0a1a0d;
     --terminal-bright: #00ff41;
     --terminal-glow: 0 0 20px rgba(0, 204, 51, 0.4);
     --matrix-shadow: 0 0 40px rgba(0, 204, 51, 0.15);
     --card-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.6);
+  }
+
+  /* GitHub Dark */
+  [data-theme="github-dark"] {
+    --background: 220 14% 10%;
+    --foreground: 210 14% 83%;
+    --card: 220 14% 13%;
+    --card-foreground: 210 14% 83%;
+    --popover: 220 14% 13%;
+    --popover-foreground: 210 14% 83%;
+    --primary: 212 92% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 16%;
+    --secondary-foreground: 210 14% 70%;
+    --muted: 220 12% 18%;
+    --muted-foreground: 210 10% 45%;
+    --accent: 170 80% 40%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 14% 18%;
+    --input: 220 14% 16%;
+    --ring: 212 92% 45%;
+    --radius: 0.5rem;
+    --sidebar-background: 220 14% 8%;
+    --sidebar-foreground: 210 14% 70%;
+    --sidebar-primary: 212 92% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 14%;
+    --sidebar-accent-foreground: 210 14% 83%;
+    --sidebar-border: 220 14% 15%;
+    --sidebar-ring: 212 92% 45%;
+    --neon-green: 120 70% 45%;
+    --neon-cyan: 170 80% 40%;
+    --neon-lime: 90 70% 45%;
+    --neon-amber: 45 90% 50%;
+    --neon-red: 0 80% 55%;
+    --neon-blue: 212 92% 55%;
+    --terminal-green: #3fb950;
+    --terminal-dim: #0d1117;
+    --terminal-bright: #58a6ff;
+    --terminal-glow: 0 0 20px rgba(88, 166, 255, 0.3);
+    --matrix-shadow: 0 0 40px rgba(88, 166, 255, 0.1);
+    --card-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Light Mode */
+  [data-theme="light"] {
+    --background: 0 0% 98%;
+    --foreground: 220 14% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 14% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 14% 15%;
+    --primary: 212 92% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 14% 35%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 170 80% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 212 92% 45%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 220 14% 35%;
+    --sidebar-primary: 212 92% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 14% 15%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 212 92% 45%;
+    --neon-green: 120 60% 35%;
+    --neon-cyan: 170 70% 35%;
+    --neon-lime: 90 60% 38%;
+    --neon-amber: 35 85% 48%;
+    --neon-red: 0 70% 50%;
+    --neon-blue: 212 80% 50%;
+    --terminal-green: #1a7f37;
+    --terminal-dim: #f6f8fa;
+    --terminal-bright: #0969da;
+    --terminal-glow: 0 0 20px rgba(9, 105, 218, 0.15);
+    --matrix-shadow: 0 0 40px rgba(9, 105, 218, 0.05);
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 }
 
