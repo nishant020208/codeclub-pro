@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import AppSidebar from "@/components/AppSidebar";
 import NotificationBell from "@/components/NotificationBell";
 import { Menu, Terminal } from "lucide-react";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
