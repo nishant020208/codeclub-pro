@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, BookOpen, CheckCircle, XCircle, FileText, Brain } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCircle, XCircle, GraduationCap, Zap, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import { useBadgeCheck } from "@/hooks/useBadgeCheck";
+import ModuleCard, { ModuleData } from "@/components/ModuleCard";
+import { getCourseModules } from "@/data/courseModules";
 
 interface Quiz {
   id: string;
@@ -12,13 +14,22 @@ interface Quiz {
   correct_answer: number;
 }
 
+type Level = "beginner" | "intermediate" | "advanced";
+
+const levelConfig: Record<Level, { label: string; icon: React.ElementType; color: string }> = {
+  beginner: { label: "Beginner", icon: BookOpen, color: "text-primary" },
+  intermediate: { label: "Intermediate", icon: Zap, color: "text-neon-amber" },
+  advanced: { label: "Advanced", icon: Trophy, color: "text-destructive" },
+};
+
 const CourseDetailPage: React.FC = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { checkBadges } = useBadgeCheck();
   const [course, setCourse] = useState<any>(null);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [tab, setTab] = useState<"theory" | "quizzes">("theory");
+  const [tab, setTab] = useState<"modules" | "quizzes">("modules");
+  const [level, setLevel] = useState<Level>("beginner");
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -42,97 +53,11 @@ const CourseDetailPage: React.FC = () => {
     setSubmitted(true);
     const correct = quizzes.filter((q) => answers[q.id] === q.correct_answer).length;
     toast.success(`You scored ${correct}/${quizzes.length}!`);
-    // Trigger badge check after quiz completion
     setTimeout(() => checkBadges(), 1000);
   };
 
-  // Parse theory content into styled modules
-  const renderTheoryContent = (content: string) => {
-    if (!content) return null;
-
-    // Split by headings or double newlines to create modules
-    const sections = content.split(/(?=<h[1-3])|(?=#{1,3}\s)|(?:\n\n(?=[A-Z]))/g).filter(Boolean);
-
-    if (sections.length <= 1) {
-      // Single block - render with enhanced styling
-      return (
-        <div className="terminal-card rounded-lg p-6 border-primary/20">
-          <div
-            className="prose prose-invert max-w-none 
-              prose-headings:text-primary prose-headings:font-mono prose-headings:border-b prose-headings:border-primary/20 prose-headings:pb-2
-              prose-h1:text-xl prose-h2:text-lg prose-h3:text-base
-              prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:text-sm
-              prose-strong:text-foreground
-              prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs
-              prose-pre:bg-background prose-pre:border prose-pre:border-border prose-pre:rounded-lg
-              prose-ul:text-muted-foreground prose-ol:text-muted-foreground
-              prose-li:marker:text-primary
-              prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        </div>
-      );
-    }
-
-    // Multiple sections - render as dynamic module boxes
-    const colors = [
-      { border: "border-primary/30", bg: "bg-primary/5", icon: "text-primary", accent: "bg-primary/10" },
-      { border: "border-neon-cyan/30", bg: "bg-neon-cyan/5", icon: "text-neon-cyan", accent: "bg-neon-cyan/10" },
-      { border: "border-neon-amber/30", bg: "bg-neon-amber/5", icon: "text-neon-amber", accent: "bg-neon-amber/10" },
-      { border: "border-neon-purple/30", bg: "bg-neon-purple/5", icon: "text-neon-purple", accent: "bg-neon-purple/10" },
-      { border: "border-destructive/30", bg: "bg-destructive/5", icon: "text-destructive", accent: "bg-destructive/10" },
-    ];
-
-    const icons = [BookOpen, FileText, Brain, BookOpen, FileText];
-
-    return (
-      <div className="grid grid-cols-1 gap-4">
-        {sections.map((section, idx) => {
-          const color = colors[idx % colors.length];
-          const Icon = icons[idx % icons.length];
-          // Extract a title from the section if it starts with a heading
-          const titleMatch = section.match(/<h[1-3][^>]*>(.*?)<\/h[1-3]>/i) || section.match(/^#{1,3}\s+(.+)/m);
-          const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, "") : `Module ${idx + 1}`;
-          const bodyContent = titleMatch ? section.replace(titleMatch[0], "") : section;
-
-          return (
-            <div
-              key={idx}
-              className={`terminal-card rounded-lg ${color.border} ${color.bg} overflow-hidden transition-all duration-300 hover:shadow-lg`}
-            >
-              {/* Module header */}
-              <div className={`flex items-center gap-3 px-5 py-3 ${color.accent} border-b ${color.border}`}>
-                <div className={`w-7 h-7 rounded-md flex items-center justify-center ${color.accent}`}>
-                  <Icon className={`w-4 h-4 ${color.icon}`} />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
-                    Module {idx + 1}
-                  </span>
-                  <h3 className={`text-sm font-bold ${color.icon}`}>{title}</h3>
-                </div>
-              </div>
-              {/* Module body */}
-              <div className="px-5 py-4">
-                <div
-                  className="prose prose-invert max-w-none prose-sm
-                    prose-headings:text-foreground prose-headings:font-mono
-                    prose-p:text-muted-foreground prose-p:leading-relaxed
-                    prose-strong:text-foreground
-                    prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs
-                    prose-pre:bg-background prose-pre:border prose-pre:border-border prose-pre:rounded-lg
-                    prose-ul:text-muted-foreground prose-ol:text-muted-foreground
-                    prose-li:marker:text-primary
-                    prose-a:text-primary"
-                  dangerouslySetInnerHTML={{ __html: bodyContent }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+  const courseModules = course ? getCourseModules(course.title) : null;
+  const currentModules: ModuleData[] = courseModules ? courseModules[level] : [];
 
   if (loading) return <div className="shimmer h-64 rounded-xl" />;
   if (!course) return <p className="text-muted-foreground">Course not found</p>;
@@ -143,10 +68,11 @@ const CourseDetailPage: React.FC = () => {
         <ArrowLeft className="w-4 h-4" /> $ cd ../courses
       </button>
 
+      {/* Course Header */}
       <div className="terminal-card rounded-lg p-6 border-primary/20">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-primary" />
+            <GraduationCap className="w-5 h-5 text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">{course.title}</h1>
@@ -155,34 +81,52 @@ const CourseDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Main Tabs: Modules | Quizzes */}
       <div className="flex gap-1 p-1 rounded-lg bg-muted/30 w-fit border border-border">
-        <button
-          onClick={() => setTab("theory")}
-          className={`px-4 py-2 rounded-md text-xs font-mono font-bold transition-all ${
-            tab === "theory" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          Theory
+        <button onClick={() => setTab("modules")} className={`px-4 py-2 rounded-md text-xs font-mono font-bold transition-all ${tab === "modules" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+          Modules
         </button>
-        <button
-          onClick={() => setTab("quizzes")}
-          className={`px-4 py-2 rounded-md text-xs font-mono font-bold transition-all ${
-            tab === "quizzes" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
+        <button onClick={() => setTab("quizzes")} className={`px-4 py-2 rounded-md text-xs font-mono font-bold transition-all ${tab === "quizzes" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           Quizzes ({quizzes.length})
         </button>
       </div>
 
-      {tab === "theory" ? (
-        <div>
-          {course.theory_content ? (
-            renderTheoryContent(course.theory_content)
+      {tab === "modules" ? (
+        <div className="space-y-4">
+          {/* Level Tabs */}
+          <div className="flex flex-wrap gap-2">
+            {(Object.keys(levelConfig) as Level[]).map((l) => {
+              const cfg = levelConfig[l];
+              const Icon = cfg.icon;
+              const count = courseModules ? courseModules[l].length : 0;
+              return (
+                <button
+                  key={l}
+                  onClick={() => setLevel(l)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-mono font-bold transition-all border ${
+                    level === l
+                      ? "bg-primary/10 border-primary/40 text-primary"
+                      : "border-border text-muted-foreground hover:text-foreground hover:border-primary/20"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {cfg.label} ({count})
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Module List */}
+          {currentModules.length > 0 ? (
+            <div className="space-y-3">
+              {currentModules.map((mod, idx) => (
+                <ModuleCard key={idx} module={mod} index={idx} totalModules={currentModules.length} />
+              ))}
+            </div>
           ) : (
             <div className="terminal-card rounded-lg p-8 text-center">
               <BookOpen className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground font-mono text-sm">No theory content yet.</p>
+              <p className="text-muted-foreground font-mono text-sm">No modules available for this level yet.</p>
             </div>
           )}
         </div>
@@ -211,12 +155,9 @@ const CourseDetailPage: React.FC = () => {
                           disabled={submitted}
                           onClick={() => setAnswers({ ...answers, [quiz.id]: oi })}
                           className={`w-full text-left px-4 py-3 rounded-md text-sm font-mono transition-all border ${
-                            isCorrect
-                              ? "border-primary bg-primary/10 text-primary"
-                              : isWrong
-                              ? "border-destructive bg-destructive/10 text-destructive"
-                              : isSelected
-                              ? "border-primary/50 bg-primary/5 text-primary"
+                            isCorrect ? "border-primary bg-primary/10 text-primary"
+                              : isWrong ? "border-destructive bg-destructive/10 text-destructive"
+                              : isSelected ? "border-primary/50 bg-primary/5 text-primary"
                               : "border-border hover:border-primary/30 text-foreground"
                           }`}
                         >
