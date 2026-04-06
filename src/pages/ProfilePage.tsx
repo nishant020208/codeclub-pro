@@ -9,6 +9,7 @@ const ProfilePage: React.FC = () => {
   const { user, userCode } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
+  const [email, setEmail] = useState("");
   const [github, setGithub] = useState("");
   const [branch, setBranch] = useState("");
   const [skills, setSkills] = useState("");
@@ -24,6 +25,7 @@ const ProfilePage: React.FC = () => {
       if (data) {
         setDisplayName(data.display_name || data.user_code || "");
         setBio(data.bio || "");
+        setEmail((data as any).email || "");
         setGithub((data as any).github_username || "");
         setBranch((data as any).branch || "");
         setSkills(((data as any).skills || []).join(", "));
@@ -47,6 +49,7 @@ const ProfilePage: React.FC = () => {
     const { error } = await supabase.from("profiles").update({
       display_name: displayName,
       bio,
+      email,
       github_username: github,
       branch,
       skills: skills.split(",").map(s => s.trim()).filter(Boolean),
@@ -108,6 +111,12 @@ const ProfilePage: React.FC = () => {
             <input value={branch} onChange={e => setBranch(e.target.value)} placeholder="e.g. CSE, ECE"
               className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-primary font-mono">email: <span className="text-destructive">*required for password reset</span></label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your.email@example.com"
+            className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
         </div>
 
         <div className="space-y-2">

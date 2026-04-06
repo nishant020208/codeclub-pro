@@ -5,7 +5,7 @@ import {
   LayoutDashboard, BookOpen, Code2, User, Trophy, Medal,
   Swords, Bot, Settings, Users, FileText, BarChart3,
   LogOut, Terminal, UserCheck, Award, Crown,
-  Calendar, Megaphone, FolderOpen, GraduationCap, Flame, MessageSquare, UsersRound, FileCode, Shield, X
+  Calendar, Megaphone, FolderOpen, GraduationCap, Flame, MessageSquare, MessageSquarePlus, UsersRound, FileCode, Shield, X
 } from "lucide-react";
 
 const memberLinks = [
@@ -26,6 +26,7 @@ const memberLinks = [
   { to: "/dashboard/achievements", icon: Trophy, label: "Achievements" },
   { to: "/dashboard/certificates", icon: GraduationCap, label: "Certificates" },
   { to: "/dashboard/resume", icon: FileCode, label: "Resume" },
+  { to: "/dashboard/feedback", icon: MessageSquarePlus, label: "Feedback" },
   { to: "/dashboard/profile", icon: User, label: "Profile" },
 ];
 
