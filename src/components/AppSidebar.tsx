@@ -5,7 +5,7 @@ import {
   LayoutDashboard, BookOpen, Code2, User, Trophy, Medal,
   Swords, Bot, Settings, Users, FileText, BarChart3,
   LogOut, Terminal, UserCheck, Award, Crown,
-  Calendar, Megaphone, FolderOpen, GraduationCap, Flame, MessageSquare, UsersRound, FileCode, Shield, X
+  Calendar, Megaphone, FolderOpen, GraduationCap, Flame, MessageSquare, MessageSquarePlus, UsersRound, FileCode, Shield, X
 } from "lucide-react";
 
 const memberLinks = [
