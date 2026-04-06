@@ -114,6 +114,12 @@ const ProfilePage: React.FC = () => {
         </div>
 
         <div className="space-y-2">
+          <label className="text-xs font-bold text-primary font-mono">email: <span className="text-destructive">*required for password reset</span></label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your.email@example.com"
+            className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
+        </div>
+
+        <div className="space-y-2">
           <label className="text-xs font-bold text-primary font-mono">github_username:</label>
           <div className="relative">
             <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

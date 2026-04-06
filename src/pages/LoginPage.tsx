@@ -50,13 +50,28 @@ const LoginPage: React.FC = () => {
     }
     setLoading(true);
     try {
-      const email = `${userCode}@codeclub.pro`;
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      // Look up user's real email from profiles
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("user_code", userCode)
+        .single();
+
+      const realEmail = (profile as any)?.email;
+      if (!realEmail) {
+        toast.error("No email found for this ID. Please add your email in your profile first.");
+        setLoading(false);
+        return;
+      }
+
+      // Update auth email to the real one, then send reset
+      const dummyEmail = `${userCode}@codeclub.pro`;
+      const { error } = await supabase.auth.resetPasswordForEmail(realEmail, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
       setResetSent(true);
-      toast.success("Password reset link sent! Check your email.");
+      toast.success("Password reset link sent to your registered email!");
     } catch (err: any) {
       toast.error(err.message || "Failed to send reset link.");
     } finally {
