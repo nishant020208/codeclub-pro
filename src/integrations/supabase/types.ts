@@ -566,6 +566,36 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          message: string
+          status: string
+          subject: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          message: string
+          status?: string
+          subject: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string
+          status?: string
+          subject?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       forum_posts: {
         Row: {
           category: string
@@ -688,6 +718,7 @@ export type Database = {
           branch: string | null
           created_at: string
           display_name: string | null
+          email: string | null
           github_username: string | null
           id: string
           skills: string[] | null
@@ -701,6 +732,7 @@ export type Database = {
           branch?: string | null
           created_at?: string
           display_name?: string | null
+          email?: string | null
           github_username?: string | null
           id?: string
           skills?: string[] | null
@@ -714,6 +746,7 @@ export type Database = {
           branch?: string | null
           created_at?: string
           display_name?: string | null
+          email?: string | null
           github_username?: string | null
           id?: string
           skills?: string[] | null
