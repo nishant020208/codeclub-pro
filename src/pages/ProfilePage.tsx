@@ -9,6 +9,7 @@ const ProfilePage: React.FC = () => {
   const { user, userCode } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
+  const [email, setEmail] = useState("");
   const [github, setGithub] = useState("");
   const [branch, setBranch] = useState("");
   const [skills, setSkills] = useState("");
