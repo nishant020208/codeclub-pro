@@ -25,6 +25,7 @@ const ProfilePage: React.FC = () => {
       if (data) {
         setDisplayName(data.display_name || data.user_code || "");
         setBio(data.bio || "");
+        setEmail((data as any).email || "");
         setGithub((data as any).github_username || "");
         setBranch((data as any).branch || "");
         setSkills(((data as any).skills || []).join(", "));
