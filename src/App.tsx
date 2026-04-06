@@ -31,6 +31,7 @@ const BattleModePage = React.lazy(() => import("@/pages/BattleModePage"));
 const ForumPage = React.lazy(() => import("@/pages/ForumPage"));
 const TeamsPage = React.lazy(() => import("@/pages/TeamsPage"));
 const ResumeBuilderPage = React.lazy(() => import("@/pages/ResumeBuilderPage"));
+const FeedbackPage = React.lazy(() => import("@/pages/FeedbackPage"));
 const ManageCoursesPage = React.lazy(() => import("@/pages/admin/ManageCoursesPage"));
 const ManageQuizzesPage = React.lazy(() => import("@/pages/admin/ManageQuizzesPage"));
 const ManageMembersPage = React.lazy(() => import("@/pages/admin/ManageMembersPage"));
