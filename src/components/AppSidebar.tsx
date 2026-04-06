@@ -26,6 +26,7 @@ const memberLinks = [
   { to: "/dashboard/achievements", icon: Trophy, label: "Achievements" },
   { to: "/dashboard/certificates", icon: GraduationCap, label: "Certificates" },
   { to: "/dashboard/resume", icon: FileCode, label: "Resume" },
+  { to: "/dashboard/feedback", icon: MessageSquarePlus, label: "Feedback" },
   { to: "/dashboard/profile", icon: User, label: "Profile" },
 ];
 
