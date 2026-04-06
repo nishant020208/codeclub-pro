@@ -49,6 +49,7 @@ const ProfilePage: React.FC = () => {
     const { error } = await supabase.from("profiles").update({
       display_name: displayName,
       bio,
+      email,
       github_username: github,
       branch,
       skills: skills.split(",").map(s => s.trim()).filter(Boolean),
