@@ -17,7 +17,7 @@ const memberLinks = [
   { to: "/dashboard/courses", icon: BookOpen, label: "Courses" },
   { to: "/dashboard/forum", icon: MessageSquare, label: "Forum" },
   { to: "/dashboard/teams", icon: UsersRound, label: "Teams" },
-  { to: "/dashboard/code", icon: Code2, label: "Projects" },
+  { to: "/dashboard/projects", icon: Code2, label: "Projects" },
   { to: "/dashboard/events", icon: Calendar, label: "Events" },
   { to: "/dashboard/resources", icon: FolderOpen, label: "Resources" },
   { to: "/dashboard/announcements", icon: Megaphone, label: "Announcements" },
