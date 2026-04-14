@@ -47,33 +47,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        // Use setTimeout to avoid Supabase deadlock
-        setTimeout(() => {
+    let mounted = true;
+
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!mounted) return;
+
+        if (session?.user) {
+          setSession(session);
+          setUser(session.user);
+          // Wait for both role and profile to be fetched before finishing loading
+          await Promise.all([
+            fetchRole(session.user.id),
+            fetchProfile(session.user.id)
+          ]);
+        } else {
+          setSession(null);
+          setUser(null);
+          setRole(null);
+          setUserCode(null);
+        }
+      } catch (error) {
+        console.error("Auth initialization error:", error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || (event === 'INITIAL_SESSION' && session)) {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
           fetchRole(session.user.id);
           fetchProfile(session.user.id);
-        }, 0);
-      } else {
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setSession(null);
+        setUser(null);
         setRole(null);
         setUserCode(null);
       }
-      setLoading(false);
+      
+      // We only care about setting loading to false once on mount
+      // subsequent state changes are handled by the session/user state
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchRole(session.user.id);
-        fetchProfile(session.user.id);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [fetchRole, fetchProfile]);
 
   const signIn = async (userCode: string, password: string) => {

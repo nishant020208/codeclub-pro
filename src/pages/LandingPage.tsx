@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Terminal, Swords, Trophy, Code2, Users, Zap, ArrowRight, Star, Rocket, Shield, BarChart3, Flame, MessageSquare } from "lucide-react";
 
 const features = [
@@ -23,6 +24,7 @@ const stats = [
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden relative">
@@ -42,12 +44,20 @@ const LandingPage: React.FC = () => {
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/login")} className="px-5 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-              $ login
-            </button>
-            <button onClick={() => navigate("/login")} className="px-5 py-2 rounded-md bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all glow-border">
-              Get Access →
-            </button>
+            {user ? (
+              <button onClick={() => navigate("/dashboard")} className="px-5 py-2 rounded-md bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all glow-border">
+                Dashboard →
+              </button>
+            ) : (
+              <>
+                <button onClick={() => navigate("/login")} className="px-5 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                  $ login
+                </button>
+                <button onClick={() => navigate("/login")} className="px-5 py-2 rounded-md bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all glow-border">
+                  Get Access →
+                </button>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -80,8 +90,8 @@ const LandingPage: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in">
-            <button onClick={() => navigate("/login")} className="px-8 py-4 rounded-md bg-primary text-primary-foreground font-bold text-lg flex items-center gap-2 hover:bg-primary/90 transition-all glow-border group font-mono">
-              $ join --now
+            <button onClick={() => navigate(user ? "/dashboard" : "/login")} className="px-8 py-4 rounded-md bg-primary text-primary-foreground font-bold text-lg flex items-center gap-2 hover:bg-primary/90 transition-all glow-border group font-mono">
+              {user ? "$ go --dashboard" : "$ join --now"}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <button onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })} className="px-8 py-4 rounded-md border border-primary/30 text-primary font-medium text-lg hover:bg-primary/5 transition-all font-mono">
@@ -143,8 +153,8 @@ const LandingPage: React.FC = () => {
             <p className="text-foreground">Ready to join the most elite coding club platform.</p>
             <p className="text-muted-foreground">$ action</p>
             <div className="flex items-center gap-4 mt-4">
-              <button onClick={() => navigate("/login")} className="px-6 py-3 rounded-md bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all glow-border">
-                $ register --now
+              <button onClick={() => navigate(user ? "/dashboard" : "/login")} className="px-6 py-3 rounded-md bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all glow-border">
+                {user ? "$ go --dashboard" : "$ register --now"}
               </button>
             </div>
           </div>
