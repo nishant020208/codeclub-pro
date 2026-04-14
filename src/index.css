@@ -5,8 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @layer base {
+
   /* Default: Hacker Green */
-  :root, [data-theme="hacker"] {
+  :root,
+  [data-theme="hacker"] {
     --background: 120 8% 4%;
     --foreground: 120 60% 80%;
     --card: 120 8% 7%;
@@ -148,7 +150,9 @@
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
 
-  code, pre, .font-mono {
+  code,
+  pre,
+  .font-mono {
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
 
@@ -157,19 +161,23 @@
     width: 6px;
     height: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: hsl(var(--background));
   }
+
   ::-webkit-scrollbar-thumb {
     background: hsl(var(--border));
     border-radius: 3px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary) / 0.5);
   }
 }
 
 @layer components {
+
   /* Terminal-style card */
   .terminal-card {
     background: hsl(var(--card));
@@ -177,6 +185,7 @@
     position: relative;
     overflow: hidden;
   }
+
   .terminal-card::before {
     content: '';
     position: absolute;
@@ -201,10 +210,11 @@
     border: 1px solid hsl(var(--primary) / 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
   .neon-card:hover {
     border-color: hsl(var(--primary) / 0.3);
     box-shadow: 0 0 30px -10px hsl(var(--primary) / 0.25),
-                inset 0 1px 0 hsl(var(--primary) / 0.1);
+      inset 0 1px 0 hsl(var(--primary) / 0.1);
     transform: translateY(-1px);
   }
 
@@ -213,6 +223,7 @@
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--neon-cyan)));
   }
+
   .gradient-text-neon {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, hsl(var(--neon-green)), hsl(var(--neon-lime)), hsl(var(--neon-cyan)));
@@ -222,6 +233,7 @@
   .glow-border {
     box-shadow: 0 0 15px -3px hsl(var(--primary) / 0.4);
   }
+
   .glow-border-cyan {
     box-shadow: 0 0 15px -3px hsl(var(--neon-cyan) / 0.4);
   }
@@ -232,6 +244,7 @@
     overflow: hidden;
     transition: all 0.3s ease;
   }
+
   .glow-button::before {
     content: '';
     position: absolute;
@@ -243,6 +256,7 @@
     transition: opacity 0.3s ease;
     filter: blur(8px);
   }
+
   .glow-button:hover::before {
     opacity: 0.5;
   }
@@ -259,13 +273,11 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      hsl(var(--primary) / 0.015) 2px,
-      hsl(var(--primary) / 0.015) 4px
-    );
+    background: repeating-linear-gradient(0deg,
+        transparent,
+        transparent 2px,
+        hsl(var(--primary) / 0.015) 2px,
+        hsl(var(--primary) / 0.015) 4px);
     pointer-events: none;
     z-index: 1;
   }
@@ -279,12 +291,10 @@
 
   /* Shimmer loading */
   .shimmer {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--muted)) 0%,
-      hsl(var(--secondary)) 50%,
-      hsl(var(--muted)) 100%
-    );
+    background: linear-gradient(90deg,
+        hsl(var(--muted)) 0%,
+        hsl(var(--secondary)) 50%,
+        hsl(var(--muted)) 100%);
     background-size: 200% 100%;
     animation: shimmer 1.5s ease-in-out infinite;
   }
@@ -299,52 +309,109 @@
 
   /* Keyframes */
   @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
   }
 
   @keyframes blink {
-    50% { opacity: 0; }
+    50% {
+      opacity: 0;
+    }
   }
 
   @keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
+    from {
+      width: 0;
+    }
+
+    to {
+      width: 100%;
+    }
   }
 
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   @keyframes pulse-glow {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+
+    50% {
+      opacity: 1;
+    }
   }
 
   @keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @keyframes count-up {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes matrix-fall {
-    0% { transform: translateY(-100%); opacity: 1; }
-    100% { transform: translateY(100vh); opacity: 0; }
+    0% {
+      transform: translateY(-100%);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
   }
 
-  .animate-float { animation: float 6s ease-in-out infinite; }
-  .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient-shift 4s ease infinite;
   }
-  .animate-count-up { animation: count-up 0.6s ease-out forwards; }
+
+  .animate-count-up {
+    animation: count-up 0.6s ease-out forwards;
+  }
 
   .progress-ring {
     transition: stroke-dashoffset 1s ease-in-out;

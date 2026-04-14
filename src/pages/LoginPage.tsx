@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Terminal, ArrowRight, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 const LoginPage: React.FC = () => {
-  const { signIn, register } = useAuth();
+  const { user, loading: authLoading, signIn, register } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
   const [userCode, setUserCode] = useState("");
@@ -16,6 +16,12 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+
+  React.useEffect(() => {
+    if (!authLoading && user) {
+      navigate("/dashboard");
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
