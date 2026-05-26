@@ -1,4 +1,4 @@
-# ⚡ CodeClub Pro — The Hacker's Command Center
+# ⚡ CodeClub Pro — The Hacker Command Center
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/lucide-react/lucide/main/icons/terminal.svg" width="80" height="80" alt="Logo" />
