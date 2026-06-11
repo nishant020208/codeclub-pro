@@ -46,6 +46,19 @@ const DSAPracticePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("All");
   const [companyFilter, setCompanyFilter] = useState<string>("All");
+  const [skillLevel, setSkillLevel] = useState<"Beginner" | "Intermediate" | "Advanced">(
+    () => (localStorage.getItem("dsa_level") as any) || "Beginner"
+  );
+  const [recommended, setRecommended] = useState<boolean>(() => localStorage.getItem("dsa_recommend") === "1");
+
+  useEffect(() => { localStorage.setItem("dsa_level", skillLevel); }, [skillLevel]);
+  useEffect(() => { localStorage.setItem("dsa_recommend", recommended ? "1" : "0"); }, [recommended]);
+
+  const levelAllows = (diff: string) => {
+    if (skillLevel === "Beginner") return diff === "Easy";
+    if (skillLevel === "Intermediate") return diff === "Easy" || diff === "Medium";
+    return true;
+  };
 
   useEffect(() => {
     supabase.from("dsa_questions").select("*").order("created_at").then(({ data }) => {
