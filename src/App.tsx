@@ -12,6 +12,7 @@ import React, { Suspense } from "react";
 // Lazy-loaded pages for code splitting
 const LandingPage = React.lazy(() => import("@/pages/LandingPage"));
 const LoginPage = React.lazy(() => import("@/pages/LoginPage"));
+const SignupPage = React.lazy(() => import("@/pages/SignupPage"));
 const DashboardPage = React.lazy(() => import("@/pages/DashboardPage"));
 const CoursesPage = React.lazy(() => import("@/pages/CoursesPage"));
 const CourseDetailPage = React.lazy(() => import("@/pages/CourseDetailPage"));
@@ -81,6 +82,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route element={<ProtectedRoute />}>
                 <Route element={<DashboardLayout />}>

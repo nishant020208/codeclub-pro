@@ -719,12 +719,14 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string | null
+          full_name: string | null
           github_username: string | null
           id: string
           skills: string[] | null
           updated_at: string
-          user_code: string
+          user_code: string | null
           user_id: string
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -733,12 +735,14 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          full_name?: string | null
           github_username?: string | null
           id?: string
           skills?: string[] | null
           updated_at?: string
-          user_code: string
+          user_code?: string | null
           user_id: string
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -747,12 +751,14 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          full_name?: string | null
           github_username?: string | null
           id?: string
           skills?: string[] | null
           updated_at?: string
-          user_code?: string
+          user_code?: string | null
           user_id?: string
+          username?: string | null
         }
         Relationships: []
       }
