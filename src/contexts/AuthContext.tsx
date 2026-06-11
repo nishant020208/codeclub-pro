@@ -1,8 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import type { User, Session } from "@supabase/supabase-js";
 
 type AppRole = "admin" | "member" | null;
+
+interface SignUpPayload {
+  email: string;
+  password: string;
+  fullName: string;
+  username: string;
+  role: "admin" | "member";
+}
 
 interface AuthContextType {
   user: User | null;
@@ -10,8 +19,10 @@ interface AuthContextType {
   role: AppRole;
   userCode: string | null;
   loading: boolean;
-  signIn: (userCode: string, password: string) => Promise<void>;
-  register: (userCode: string, code: string, password: string) => Promise<string>;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (payload: SignUpPayload) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -30,90 +41,68 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userCode, setUserCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchRole = useCallback(async (userId: string) => {
-    const { data } = await supabase.functions.invoke("auth-custom", {
-      body: { action: "get_role", user_code: userId },
-    });
-    setRole(data?.role || "member");
-  }, []);
-
-  const fetchProfile = useCallback(async (userId: string) => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("user_code")
-      .eq("user_id", userId)
-      .single();
-    if (data) setUserCode(data.user_code);
+  const loadUserMeta = useCallback(async (userId: string) => {
+    const [profileRes, roleRes] = await Promise.all([
+      supabase.from("profiles").select("username, user_code, display_name, full_name").eq("user_id", userId).maybeSingle(),
+      supabase.from("user_roles").select("role").eq("user_id", userId).maybeSingle(),
+    ]);
+    const p: any = profileRes.data;
+    setUserCode(p?.username || p?.user_code || p?.display_name || p?.full_name || null);
+    setRole(((roleRes.data as any)?.role as AppRole) || "member");
   }, []);
 
   useEffect(() => {
     let mounted = true;
-
-    const initializeAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!mounted) return;
-
-        if (session?.user) {
-          setSession(session);
-          setUser(session.user);
-          // Wait for both role and profile to be fetched before finishing loading
-          await Promise.all([
-            fetchRole(session.user.id),
-            fetchProfile(session.user.id)
-          ]);
-        } else {
-          setSession(null);
-          setUser(null);
-          setRole(null);
-          setUserCode(null);
-        }
-      } catch (error) {
-        console.error("Auth initialization error:", error);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
-    initializeAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || (event === 'INITIAL_SESSION' && session)) {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          fetchRole(session.user.id);
-          fetchProfile(session.user.id);
-        }
-      } else if (event === 'SIGNED_OUT') {
-        setSession(null);
-        setUser(null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        setTimeout(() => loadUserMeta(session.user.id), 0);
+      } else {
         setRole(null);
         setUserCode(null);
       }
-      
-      // We only care about setting loading to false once on mount
-      // subsequent state changes are handled by the session/user state
     });
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, [fetchRole, fetchProfile]);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) loadUserMeta(session.user.id).finally(() => setLoading(false));
+      else setLoading(false);
+    });
 
-  const signIn = async (userCode: string, password: string) => {
-    const email = `${userCode}@codeclub.pro`;
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return () => { mounted = false; subscription.unsubscribe(); };
+  }, [loadUserMeta]);
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
     if (error) throw error;
   };
 
-  const register = async (userCode: string, code: string, password: string): Promise<string> => {
-    const { data, error } = await supabase.functions.invoke("auth-custom", {
-      body: { action: "register", user_code: userCode, code, password },
+  const signUp = async ({ email, password, fullName, username, role }: SignUpPayload) => {
+    const redirectUrl = `${window.location.origin}/dashboard`;
+    const { error } = await supabase.auth.signUp({
+      email: email.trim().toLowerCase(),
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: { full_name: fullName, username: username.trim().toLowerCase(), role },
+      },
     });
-    if (error || data?.error) throw new Error(data?.error || error?.message || "Registration failed");
-    return data.role;
+    if (error) throw error;
+  };
+
+  const signInWithGoogle = async () => {
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/dashboard` });
+    if (result.error) throw result.error instanceof Error ? result.error : new Error(String(result.error));
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
   };
 
   const signOut = async () => {
@@ -123,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, role, userCode, loading, signIn, register, signOut }}>
+    <AuthContext.Provider value={{ user, session, role, userCode, loading, signIn, signUp, signInWithGoogle, resetPassword, signOut }}>
       {children}
     </AuthContext.Provider>
   );
