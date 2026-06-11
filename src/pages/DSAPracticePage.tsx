@@ -20,8 +20,16 @@ interface DSAQuestion {
 const LANG_TEMPLATES: Record<string, string> = {
   Python: '# Write your solution here\ndef solve():\n    pass\n\nsolve()',
   JavaScript: '// Write your solution here\nfunction solve() {\n\n}\n\nsolve();',
+  TypeScript: '// Write your solution here\nfunction solve(): void {\n\n}\n\nsolve();',
   Java: 'public class Solution {\n    public static void main(String[] args) {\n        // Write your solution here\n    }\n}',
   "C++": '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}',
+  C: '#include <stdio.h>\n\nint main(void) {\n    // Write your solution here\n    return 0;\n}',
+  Go: 'package main\n\nimport "fmt"\n\nfunc main() {\n    // Write your solution here\n    _ = fmt.Sprintf\n}',
+  Rust: 'fn main() {\n    // Write your solution here\n}',
+  "C#": 'using System;\n\nclass Solution {\n    static void Main() {\n        // Write your solution here\n    }\n}',
+  Kotlin: 'fun main() {\n    // Write your solution here\n}',
+  Swift: 'import Foundation\n\nfunc solve() {\n    // Write your solution here\n}\n\nsolve()',
+  Ruby: '# Write your solution here\ndef solve\nend\n\nsolve',
 };
 
 const COMPANIES = ["All", "Amazon", "Google", "Microsoft", "Meta", "Apple", "Netflix", "Adobe", "Flipkart", "Uber"];
