@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Code2, Send, ChevronLeft, CheckCircle, XCircle, Loader2, Building2 } from "lucide-react";
+import { Code2, Send, ChevronLeft, CheckCircle, XCircle, Loader2, Building2, Sparkles, GraduationCap } from "lucide-react";
 import { useBadgeCheck } from "@/hooks/useBadgeCheck";
 
 interface DSAQuestion {
