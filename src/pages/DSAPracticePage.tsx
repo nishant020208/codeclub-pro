@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Code2, Send, ChevronLeft, CheckCircle, XCircle, Loader2, Building2 } from "lucide-react";
+import { Code2, Send, ChevronLeft, CheckCircle, XCircle, Loader2, Building2, Sparkles, GraduationCap } from "lucide-react";
 import { useBadgeCheck } from "@/hooks/useBadgeCheck";
 
 interface DSAQuestion {
@@ -46,6 +46,19 @@ const DSAPracticePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("All");
   const [companyFilter, setCompanyFilter] = useState<string>("All");
+  const [skillLevel, setSkillLevel] = useState<"Beginner" | "Intermediate" | "Advanced">(
+    () => (localStorage.getItem("dsa_level") as any) || "Beginner"
+  );
+  const [recommended, setRecommended] = useState<boolean>(() => localStorage.getItem("dsa_recommend") === "1");
+
+  useEffect(() => { localStorage.setItem("dsa_level", skillLevel); }, [skillLevel]);
+  useEffect(() => { localStorage.setItem("dsa_recommend", recommended ? "1" : "0"); }, [recommended]);
+
+  const levelAllows = (diff: string) => {
+    if (skillLevel === "Beginner") return diff === "Easy";
+    if (skillLevel === "Intermediate") return diff === "Easy" || diff === "Medium";
+    return true;
+  };
 
   useEffect(() => {
     supabase.from("dsa_questions").select("*").order("created_at").then(({ data }) => {
@@ -110,7 +123,8 @@ const DSAPracticePage: React.FC = () => {
 
   const filtered = questions
     .filter(q => filter === "All" || q.difficulty === filter)
-    .filter(q => companyFilter === "All" || (q.company_tags || []).includes(companyFilter));
+    .filter(q => companyFilter === "All" || (q.company_tags || []).includes(companyFilter))
+    .filter(q => !recommended || levelAllows(q.difficulty));
 
   if (selected) {
     return (
@@ -192,22 +206,46 @@ const DSAPracticePage: React.FC = () => {
         </h1>
       </div>
 
-      {/* Difficulty filters */}
+      {/* Skill level + Recommended toggle */}
+      <div className="terminal-card rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 shrink-0">
+          <GraduationCap className="w-4 h-4 text-primary" />
+          <span className="text-xs font-mono font-bold text-primary">skill_level:</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {(["Beginner", "Intermediate", "Advanced"] as const).map(lvl => (
+            <button key={lvl} onClick={() => setSkillLevel(lvl)}
+              className={`px-3 py-1.5 rounded-md text-xs font-mono font-bold transition-all min-h-[36px] ${
+                skillLevel === lvl ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}>
+              {lvl}
+            </button>
+          ))}
+        </div>
+        <button onClick={() => setRecommended(!recommended)}
+          className={`ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-mono font-bold transition-all min-h-[36px] border ${
+            recommended ? "bg-neon-amber/15 text-neon-amber border-neon-amber/40" : "bg-muted text-muted-foreground border-border hover:bg-muted/80"
+          }`}>
+          <Sparkles className="w-3.5 h-3.5" />
+          {recommended ? "Recommended: ON" : "Recommended"}
+        </button>
+      </div>
+
+      {/* Difficulty + Company filters */}
       <div className="flex flex-wrap gap-2">
         {["All", "Easy", "Medium", "Hard"].map(f => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-md text-xs font-mono font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-md text-xs font-mono font-bold transition-all min-h-[36px] ${
               filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}>
             {f}
           </button>
         ))}
         <div className="w-px bg-border mx-1" />
-        {/* Company filters */}
         <div className="flex flex-wrap gap-1">
           {COMPANIES.map(c => (
             <button key={c} onClick={() => setCompanyFilter(c)}
-              className={`px-3 py-1.5 rounded-md text-xs font-mono transition-all flex items-center gap-1 ${
+              className={`px-3 py-1.5 rounded-md text-xs font-mono transition-all flex items-center gap-1 min-h-[36px] ${
                 companyFilter === c ? "bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/30" : "bg-muted/50 text-muted-foreground hover:bg-muted/80"
               }`}>
               {c !== "All" && <Building2 className="w-3 h-3" />}

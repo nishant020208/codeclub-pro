@@ -113,8 +113,8 @@ const LoginPage: React.FC = () => {
                 <form onSubmit={handleForgot} className="space-y-5">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-primary font-mono">email:</label>
-                    <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
-                      className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono" />
+                    <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+                      className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono min-h-[48px]" />
                   </div>
                   <button type="submit" disabled={loading}
                     className="w-full py-3.5 rounded-md bg-primary text-primary-foreground font-bold hover:bg-primary/90 disabled:opacity-50 glow-border">
@@ -128,14 +128,14 @@ const LoginPage: React.FC = () => {
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-primary font-mono">email:</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
-                    className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono" />
+                  <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+                    className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono min-h-[48px]" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-primary font-mono">password:</label>
                   <div className="relative">
-                    <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
-                      className="w-full px-4 py-3 pr-12 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono" />
+                    <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password"
+                      className="w-full px-4 py-3 pr-12 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono min-h-[48px]" />
                     <button type="button" onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

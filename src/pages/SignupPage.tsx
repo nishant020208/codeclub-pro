@@ -96,19 +96,19 @@ const SignupPage: React.FC = () => {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">full_name:</label>
               <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Ada Lovelace"
-                className="w-full px-4 py-2.5 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
+                className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">email:</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
-                className="w-full px-4 py-2.5 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
+              <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+                className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">username:</label>
               <input value={username} onChange={e => { setUsername(e.target.value); setUserTouchedUsername(true); }} placeholder="ada_lovelace"
-                className="w-full px-4 py-2.5 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
+                className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
             <div className="space-y-1.5">
@@ -126,7 +126,7 @@ const SignupPage: React.FC = () => {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">password:</label>
               <div className="relative">
-                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
+                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" autoComplete="new-password"
                   className="w-full px-4 py-2.5 pr-10 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
                 <button type="button" onClick={() => setShow(!show)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
                   {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -147,7 +147,7 @@ const SignupPage: React.FC = () => {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">confirm_password:</label>
               <input type={show ? "text" : "password"} value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="••••••••"
-                className="w-full px-4 py-2.5 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
+                className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
             <label className="flex items-start gap-2 text-xs font-mono text-muted-foreground cursor-pointer">
