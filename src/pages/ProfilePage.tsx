@@ -6,7 +6,7 @@ import { User, Save, Github, Code2, Trophy, Flame } from "lucide-react";
 import ActivityHeatmap from "@/components/ActivityHeatmap";
 
 const ProfilePage: React.FC = () => {
-  const { user, userCode, signOut } = useAuth();
+  const { user, userCode } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
