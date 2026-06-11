@@ -101,7 +101,7 @@ const SignupPage: React.FC = () => {
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">email:</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+              <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
@@ -126,7 +126,7 @@ const SignupPage: React.FC = () => {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">password:</label>
               <div className="relative">
-                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
+                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" autoComplete="new-password"
                   className="w-full px-4 py-2.5 pr-10 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm" />
                 <button type="button" onClick={() => setShow(!show)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
                   {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
