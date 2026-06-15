@@ -98,7 +98,7 @@ const SignupPage: React.FC = () => {
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">email:</label>
-              <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+              <input type="text" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
@@ -108,17 +108,6 @@ const SignupPage: React.FC = () => {
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-primary font-mono">role:</label>
-              <div className="grid grid-cols-2 gap-2">
-                {(["member", "admin"] as const).map(r => (
-                  <button key={r} type="button" onClick={() => setRole(r)}
-                    className={`py-2.5 rounded-md font-mono text-xs font-bold border transition-colors ${role === r ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border text-muted-foreground hover:text-foreground"}`}>
-                    {r === "member" ? "Member" : "Club Admin"}
-                  </button>
-                ))}
-              </div>
-            </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">password:</label>
