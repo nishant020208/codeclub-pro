@@ -54,19 +54,18 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = signupSchema.safeParse({ fullName, email, username, password, confirm, role, terms });
+    const parsed = signupSchema.safeParse({ fullName, email, username, password, confirm, terms });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
     }
     setLoading(true);
     try {
-      await signUp({ email, password, fullName, username, role });
+      await signUp({ email, password, fullName, username, role: "member" });
       toast.success("Account created! Check your email to confirm.");
-      navigate("/login");
+      window.location.assign("/login");
     } catch (err: any) {
       toast.error(err.message || "Sign-up failed.");
-    } finally {
       setLoading(false);
     }
   };
