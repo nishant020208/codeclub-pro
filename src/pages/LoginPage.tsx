@@ -6,8 +6,8 @@ import { Terminal, ArrowRight, Eye, EyeOff, ArrowLeft, Mail } from "lucide-react
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().trim().email("Invalid email").max(255),
-  password: z.string().min(6, "Password must be at least 6 characters").max(128),
+  email: z.string().trim().min(1, "Email or username required").max(255),
+  password: z.string().min(1, "Password required").max(128),
 });
 
 const LoginPage: React.FC = () => {
