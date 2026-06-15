@@ -128,7 +128,7 @@ const LoginPage: React.FC = () => {
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-primary font-mono">email:</label>
-                  <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+                  <input type="text" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
                     className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono min-h-[48px]" />
                 </div>
                 <div className="space-y-2">
