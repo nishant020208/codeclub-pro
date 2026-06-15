@@ -7,11 +7,10 @@ import { z } from "zod";
 
 const signupSchema = z.object({
   fullName: z.string().trim().min(2, "Full name is required").max(100),
-  email: z.string().trim().email("Invalid email").max(255),
+  email: z.string().trim().min(3, "Email is required").max(255),
   username: z.string().trim().min(3, "Username must be 3+ chars").max(32).regex(/^[a-z0-9_-]+$/i, "Letters, numbers, _ and - only"),
   password: z.string().min(8, "Password must be 8+ characters").max(128),
   confirm: z.string(),
-  role: z.enum(["member", "admin"]),
   terms: z.literal(true, { errorMap: () => ({ message: "You must accept the terms" }) }),
 }).refine(d => d.password === d.confirm, { message: "Passwords do not match", path: ["confirm"] });
 
