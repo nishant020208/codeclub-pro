@@ -6,8 +6,8 @@ import { Terminal, ArrowRight, Eye, EyeOff, ArrowLeft, Mail } from "lucide-react
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().trim().email("Invalid email").max(255),
-  password: z.string().min(6, "Password must be at least 6 characters").max(128),
+  email: z.string().trim().min(1, "Email or username required").max(255),
+  password: z.string().min(1, "Password required").max(128),
 });
 
 const LoginPage: React.FC = () => {
@@ -38,10 +38,10 @@ const LoginPage: React.FC = () => {
     try {
       await signIn(email, password);
       toast.success("Access granted.");
-      navigate(from, { replace: true });
+      // Hard reload to ensure all auth-dependent state refreshes
+      window.location.assign(from);
     } catch (err: any) {
       toast.error(err.message || "Invalid credentials.");
-    } finally {
       setLoading(false);
     }
   };
@@ -128,7 +128,7 @@ const LoginPage: React.FC = () => {
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-primary font-mono">email:</label>
-                  <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+                  <input type="text" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
                     className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono min-h-[48px]" />
                 </div>
                 <div className="space-y-2">

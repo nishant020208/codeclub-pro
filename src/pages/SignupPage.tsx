@@ -7,11 +7,10 @@ import { z } from "zod";
 
 const signupSchema = z.object({
   fullName: z.string().trim().min(2, "Full name is required").max(100),
-  email: z.string().trim().email("Invalid email").max(255),
+  email: z.string().trim().min(3, "Email is required").max(255),
   username: z.string().trim().min(3, "Username must be 3+ chars").max(32).regex(/^[a-z0-9_-]+$/i, "Letters, numbers, _ and - only"),
   password: z.string().min(8, "Password must be 8+ characters").max(128),
   confirm: z.string(),
-  role: z.enum(["member", "admin"]),
   terms: z.literal(true, { errorMap: () => ({ message: "You must accept the terms" }) }),
 }).refine(d => d.password === d.confirm, { message: "Passwords do not match", path: ["confirm"] });
 
@@ -35,7 +34,6 @@ const SignupPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [role, setRole] = useState<"member" | "admin">("member");
   const [terms, setTerms] = useState(false);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -56,19 +54,18 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = signupSchema.safeParse({ fullName, email, username, password, confirm, role, terms });
+    const parsed = signupSchema.safeParse({ fullName, email, username, password, confirm, terms });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
     }
     setLoading(true);
     try {
-      await signUp({ email, password, fullName, username, role });
+      await signUp({ email, password, fullName, username, role: "member" });
       toast.success("Account created! Check your email to confirm.");
-      navigate("/login");
+      window.location.assign("/login");
     } catch (err: any) {
       toast.error(err.message || "Sign-up failed.");
-    } finally {
       setLoading(false);
     }
   };
@@ -101,7 +98,7 @@ const SignupPage: React.FC = () => {
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">email:</label>
-              <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
+              <input type="text" inputMode="email" autoComplete="email" autoCapitalize="none" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
@@ -111,17 +108,6 @@ const SignupPage: React.FC = () => {
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-primary font-mono">role:</label>
-              <div className="grid grid-cols-2 gap-2">
-                {(["member", "admin"] as const).map(r => (
-                  <button key={r} type="button" onClick={() => setRole(r)}
-                    className={`py-2.5 rounded-md font-mono text-xs font-bold border transition-colors ${role === r ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border text-muted-foreground hover:text-foreground"}`}>
-                    {r === "member" ? "Member" : "Club Admin"}
-                  </button>
-                ))}
-              </div>
-            </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">password:</label>
