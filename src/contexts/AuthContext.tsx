@@ -10,7 +10,6 @@ interface SignUpPayload {
   password: string;
   fullName: string;
   username: string;
-  role: "admin" | "member";
 }
 
 interface AuthContextType {
@@ -22,6 +21,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (payload: SignUpPayload) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  refreshUserMeta: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -80,24 +80,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
   };
 
-  const signUp = async ({ email, password, fullName, username, role }: SignUpPayload) => {
+  const refreshUserMeta = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) await loadUserMeta(user.id);
+  };
+
+  const signUp = async ({ email, password, fullName, username }: SignUpPayload) => {
     const redirectUrl = `${window.location.origin}/dashboard`;
     const { error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { full_name: fullName, username: username.trim().toLowerCase(), role },
+        data: { full_name: fullName, username: username.trim().toLowerCase() },
       },
     });
     if (error) throw error;
   };
 
   const signInWithGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${window.location.origin}/dashboard`,
+      extraParams: { prompt: "select_account" },
+    });
     if (result.error) throw result.error instanceof Error ? result.error : new Error(String(result.error));
     if (!result.redirected) {
-      // Session was set directly; reload to /dashboard
       window.location.assign("/dashboard");
     }
   };
@@ -116,7 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, role, userCode, loading, signIn, signUp, signInWithGoogle, resetPassword, signOut }}>
+    <AuthContext.Provider value={{ user, session, role, userCode, loading, signIn, signUp, signInWithGoogle, refreshUserMeta, resetPassword, signOut }}>
       {children}
     </AuthContext.Provider>
   );
