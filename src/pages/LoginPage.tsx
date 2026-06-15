@@ -38,10 +38,10 @@ const LoginPage: React.FC = () => {
     try {
       await signIn(email, password);
       toast.success("Access granted.");
-      navigate(from, { replace: true });
+      // Hard reload to ensure all auth-dependent state refreshes
+      window.location.assign(from);
     } catch (err: any) {
       toast.error(err.message || "Invalid credentials.");
-    } finally {
       setLoading(false);
     }
   };
