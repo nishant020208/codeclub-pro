@@ -34,7 +34,6 @@ const SignupPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [role, setRole] = useState<"member" | "admin">("member");
   const [terms, setTerms] = useState(false);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
