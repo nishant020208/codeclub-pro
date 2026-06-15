@@ -94,8 +94,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/dashboard` });
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) throw result.error instanceof Error ? result.error : new Error(String(result.error));
+    if (!result.redirected) {
+      // Session was set directly; reload to /dashboard
+      window.location.assign("/dashboard");
+    }
   };
 
   const resetPassword = async (email: string) => {
