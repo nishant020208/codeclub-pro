@@ -8,6 +8,7 @@ import { z } from "zod";
 const signupSchema = z.object({
   fullName: z.string().trim().min(2, "Full name is required").max(100),
   email: z.string().trim().min(3, "Email is required").max(255),
+  mobile: z.string().trim().min(7, "Mobile number is required").max(20).regex(/^[0-9+\-\s()]+$/, "Invalid mobile number"),
   username: z.string().trim().min(3, "Username must be 3+ chars").max(32).regex(/^[a-z0-9_-]+$/i, "Letters, numbers, _ and - only"),
   password: z.string().min(8, "Password must be 8+ characters").max(128),
   confirm: z.string(),
