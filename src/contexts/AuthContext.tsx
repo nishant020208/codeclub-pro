@@ -49,6 +49,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const p: any = profileRes.data;
     setUserCode(p?.username || p?.user_code || p?.display_name || p?.full_name || null);
     setRole(((roleRes.data as any)?.role as AppRole) || "member");
+
+    // Apply any pending admin passcode captured before sign-in
+    const pending = typeof window !== "undefined" ? sessionStorage.getItem("pending_admin_passcode") : null;
+    if (pending) {
+      sessionStorage.removeItem("pending_admin_passcode");
+      try {
+        const { data, error } = await supabase.functions.invoke("admin-access", {
+          body: { action: "grant_admin", passcode: pending },
+        });
+        if (!error && !(data as any)?.error) {
+          const r = await supabase.from("user_roles").select("role").eq("user_id", userId).maybeSingle();
+          setRole(((r.data as any)?.role as AppRole) || "member");
+        }
+      } catch { /* silent */ }
+    }
   }, []);
 
   useEffect(() => {
@@ -99,14 +114,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/dashboard`,
-      extraParams: { prompt: "select_account" },
-    });
-    if (result.error) throw result.error instanceof Error ? result.error : new Error(String(result.error));
-    if (!result.redirected) {
-      window.location.assign("/dashboard");
+    const host = window.location.hostname;
+    const isLovableHost = host.endsWith(".lovable.app") || host.endsWith(".lovable.dev") || host === "localhost";
+    if (isLovableHost) {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${window.location.origin}/dashboard`,
+        extraParams: { prompt: "select_account" },
+      });
+      if (result.error) throw result.error instanceof Error ? result.error : new Error(String(result.error));
+      if (!result.redirected) window.location.assign("/dashboard");
+      return;
     }
+    // Fallback for external hosts (e.g. Vercel) — use Supabase directly
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+        queryParams: { prompt: "select_account" },
+      },
+    });
+    if (error) throw error;
   };
 
   const resetPassword = async (email: string) => {

@@ -3,22 +3,37 @@ import { Terminal, X, Loader2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const FloatingAdminAccess: React.FC = () => {
   const { user, role, refreshUserMeta } = useAuth();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [passcode, setPasscode] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (!user || role === "admin") return null;
+  // Hide for users that are already admin
+  if (user && role === "admin") return null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!passcode.trim()) return;
+    const code = passcode.trim();
+    if (!code) return;
+
+    // Not logged in: stash passcode and bounce to login
+    if (!user) {
+      sessionStorage.setItem("pending_admin_passcode", code);
+      toast.info("Sign in to activate admin access.");
+      setOpen(false);
+      setPasscode("");
+      navigate("/login");
+      return;
+    }
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("admin-access", {
-        body: { action: "grant_admin", passcode: passcode.trim() },
+        body: { action: "grant_admin", passcode: code },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
@@ -70,7 +85,9 @@ const FloatingAdminAccess: React.FC = () => {
               </button>
             </div>
             <p className="text-xs text-muted-foreground mb-4">
-              Enter admin passcode to elevate your account.
+              {user
+                ? "Enter admin passcode to elevate your account."
+                : "Enter admin passcode. You'll be asked to sign in to activate it."}
             </p>
             <input
               type="password"
