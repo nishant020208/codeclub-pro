@@ -28,10 +28,11 @@ function passwordStrength(p: string): { score: number; label: string; color: str
 }
 
 const SignupPage: React.FC = () => {
-  const { user, loading: authLoading, signUp, signInWithGoogle } = useAuth();
+  const { user, loading: authLoading, signUp } = useAuth();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -55,14 +56,14 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = signupSchema.safeParse({ fullName, email, username, password, confirm, terms });
+    const parsed = signupSchema.safeParse({ fullName, email, mobile, username, password, confirm, terms });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
     }
     setLoading(true);
     try {
-      await signUp({ email, password, fullName, username });
+      await signUp({ email, password, fullName, username, mobile });
       toast.success("Account created! Check your email to confirm.");
       window.location.assign("/login");
     } catch (err: any) {
