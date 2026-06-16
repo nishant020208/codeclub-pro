@@ -4,6 +4,7 @@ import AppSidebar from "@/components/AppSidebar";
 import NotificationBell from "@/components/NotificationBell";
 import { Menu, Terminal, LogOut } from "lucide-react";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import FloatingAdminAccess from "@/components/FloatingAdminAccess";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
