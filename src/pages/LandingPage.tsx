@@ -172,6 +172,7 @@ const LandingPage: React.FC = () => {
           <p className="text-sm text-muted-foreground font-mono">© 2026 CodeClub Pro // Built for hackers, by hackers.</p>
         </div>
       </footer>
+      <FloatingAdminAccess />
     </div>
   );
 };
