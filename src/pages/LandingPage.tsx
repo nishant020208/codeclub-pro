@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Terminal, Swords, Trophy, Code2, Users, Zap, ArrowRight, Star, Rocket, Shield, BarChart3, Flame, MessageSquare } from "lucide-react";
+import FloatingAdminAccess from "@/components/FloatingAdminAccess";
 
 const features = [
   { icon: Terminal, title: "Coding Challenges", desc: "Solve DSA problems with AI-powered evaluation and instant feedback." },
