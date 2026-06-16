@@ -49,6 +49,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const p: any = profileRes.data;
     setUserCode(p?.username || p?.user_code || p?.display_name || p?.full_name || null);
     setRole(((roleRes.data as any)?.role as AppRole) || "member");
+
+    // Apply any pending admin passcode captured before sign-in
+    const pending = typeof window !== "undefined" ? sessionStorage.getItem("pending_admin_passcode") : null;
+    if (pending) {
+      sessionStorage.removeItem("pending_admin_passcode");
+      try {
+        const { data, error } = await supabase.functions.invoke("admin-access", {
+          body: { action: "grant_admin", passcode: pending },
+        });
+        if (!error && !(data as any)?.error) {
+          const r = await supabase.from("user_roles").select("role").eq("user_id", userId).maybeSingle();
+          setRole(((r.data as any)?.role as AppRole) || "member");
+        }
+      } catch { /* silent */ }
+    }
   }, []);
 
   useEffect(() => {
