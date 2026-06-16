@@ -105,7 +105,13 @@ const SignupPage: React.FC = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-primary font-mono">username:</label>
+              <label className="text-xs font-bold text-primary font-mono">mobile_number:</label>
+              <input type="tel" inputMode="tel" autoComplete="tel" value={mobile} onChange={e => setMobile(e.target.value)} placeholder="+1 555 123 4567"
+                className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-primary font-mono">user_id:</label>
               <input value={username} onChange={e => { setUsername(e.target.value); setUserTouchedUsername(true); }} placeholder="ada_lovelace"
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
