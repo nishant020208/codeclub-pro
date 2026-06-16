@@ -10,6 +10,7 @@ interface SignUpPayload {
   password: string;
   fullName: string;
   username: string;
+  mobile?: string;
 }
 
 interface AuthContextType {
