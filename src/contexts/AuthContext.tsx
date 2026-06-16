@@ -101,14 +101,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (user) await loadUserMeta(user.id);
   };
 
-  const signUp = async ({ email, password, fullName, username }: SignUpPayload) => {
+  const signUp = async ({ email, password, fullName, username, mobile }: SignUpPayload) => {
     const redirectUrl = `${window.location.origin}/dashboard`;
     const { error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { full_name: fullName, username: username.trim().toLowerCase() },
+        data: {
+          full_name: fullName,
+          username: username.trim().toLowerCase(),
+          mobile: mobile?.trim() ?? null,
+          phone: mobile?.trim() ?? null,
+        },
       },
     });
     if (error) throw error;
