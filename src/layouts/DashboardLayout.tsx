@@ -70,6 +70,7 @@ const DashboardLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
+      <FloatingAdminAccess />
     </div>
   );
 };
