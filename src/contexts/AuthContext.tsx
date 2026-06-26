@@ -11,6 +11,7 @@ interface SignUpPayload {
   fullName: string;
   username: string;
   mobile?: string;
+  regCode: string;
 }
 
 interface AuthContextType {
@@ -101,7 +102,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (user) await loadUserMeta(user.id);
   };
 
-  const signUp = async ({ email, password, fullName, username, mobile }: SignUpPayload) => {
+  const signUp = async ({ email, password, fullName, username, mobile, regCode }: SignUpPayload) => {
+    // Server-side validation: registration code + whitelist
+    const { data: vData, error: vError } = await supabase.functions.invoke("validate-signup", {
+      body: { regCode, username: username.trim().toLowerCase() },
+    });
+    if (vError) throw new Error(vError.message || "Could not validate registration.");
+    if ((vData as any)?.error) throw new Error((vData as any).error);
+
     const redirectUrl = `${window.location.origin}/dashboard`;
     const { error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),

@@ -10,6 +10,7 @@ const signupSchema = z.object({
   email: z.string().trim().min(3, "Email is required").max(255),
   mobile: z.string().trim().min(7, "Mobile number is required").max(20).regex(/^[0-9+\-\s()]+$/, "Invalid mobile number"),
   username: z.string().trim().min(3, "Username must be 3+ chars").max(32).regex(/^[a-z0-9_-]+$/i, "Letters, numbers, _ and - only"),
+  regCode: z.string().trim().min(1, "Registration code is required").max(64),
   password: z.string().min(8, "Password must be 8+ characters").max(128),
   confirm: z.string(),
   terms: z.literal(true, { errorMap: () => ({ message: "You must accept the terms" }) }),
@@ -34,6 +35,7 @@ const SignupPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [username, setUsername] = useState("");
+  const [regCode, setRegCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [terms, setTerms] = useState(false);
@@ -56,14 +58,14 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = signupSchema.safeParse({ fullName, email, mobile, username, password, confirm, terms });
+    const parsed = signupSchema.safeParse({ fullName, email, mobile, username, regCode, password, confirm, terms });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
     }
     setLoading(true);
     try {
-      await signUp({ email, password, fullName, username, mobile });
+      await signUp({ email, password, fullName, username, mobile, regCode });
       toast.success("Account created! Check your email to confirm.");
       window.location.assign("/login");
     } catch (err: any) {
@@ -94,7 +96,7 @@ const SignupPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">full_name:</label>
-              <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Ada Lovelace"
+              <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Enter your name"
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
@@ -106,15 +108,23 @@ const SignupPage: React.FC = () => {
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">mobile_number:</label>
-              <input type="tel" inputMode="tel" autoComplete="tel" value={mobile} onChange={e => setMobile(e.target.value)} placeholder="+1 555 123 4567"
+              <input type="tel" inputMode="tel" autoComplete="tel" value={mobile} onChange={e => setMobile(e.target.value)} placeholder="Enter your mobile number"
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-primary font-mono">user_id:</label>
-              <input value={username} onChange={e => { setUsername(e.target.value); setUserTouchedUsername(true); }} placeholder="ada_lovelace"
+              <input value={username} onChange={e => { setUsername(e.target.value); setUserTouchedUsername(true); }} placeholder="Enter your user ID"
                 className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
             </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-primary font-mono">registration_code:</label>
+              <input value={regCode} onChange={e => setRegCode(e.target.value)} placeholder="Enter the club registration code"
+                className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[48px]" />
+              <p className="text-[10px] text-muted-foreground font-mono">Get the current code from a club admin.</p>
+            </div>
+
 
 
             <div className="space-y-1.5">

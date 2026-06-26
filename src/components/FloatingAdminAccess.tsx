@@ -20,18 +20,27 @@ const FloatingAdminAccess: React.FC = () => {
     const code = passcode.trim();
     if (!code) return;
 
-    // Not logged in: stash passcode and bounce to login
-    if (!user) {
-      sessionStorage.setItem("pending_admin_passcode", code);
-      toast.info("Sign in to activate admin access.");
-      setOpen(false);
-      setPasscode("");
-      navigate("/login");
-      return;
-    }
-
     setLoading(true);
     try {
+      // Not logged in → passcode-only admin sign-in (no signup/login required)
+      if (!user) {
+        const { data, error } = await supabase.functions.invoke("admin-access", {
+          body: { action: "admin_signin", passcode: code },
+        });
+        if (error) throw error;
+        if ((data as any)?.error) throw new Error((data as any).error);
+        const { access_token, refresh_token } = (data as any) ?? {};
+        if (!access_token || !refresh_token) throw new Error("Admin session could not be created.");
+        const { error: sErr } = await supabase.auth.setSession({ access_token, refresh_token });
+        if (sErr) throw sErr;
+        toast.success("Admin access granted");
+        setOpen(false);
+        setPasscode("");
+        setTimeout(() => window.location.assign("/dashboard"), 300);
+        return;
+      }
+
+      // Already signed in → elevate current account
       const { data, error } = await supabase.functions.invoke("admin-access", {
         body: { action: "grant_admin", passcode: code },
       });
@@ -87,7 +96,7 @@ const FloatingAdminAccess: React.FC = () => {
             <p className="text-xs text-muted-foreground mb-4">
               {user
                 ? "Enter admin passcode to elevate your account."
-                : "Enter admin passcode. You'll be asked to sign in to activate it."}
+                : "Enter the admin passcode to access the admin panel — no signup or login required."}
             </p>
             <input
               type="password"

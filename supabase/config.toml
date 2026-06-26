@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.ai-chat]
 verify_jwt = false
+
+[functions.validate-signup]
+verify_jwt = false
+
+[functions.admin-access]
+verify_jwt = false
