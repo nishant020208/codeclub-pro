@@ -10,12 +10,13 @@ interface ProfileForm {
   displayName: string;
   bio: string;
   email: string;
+  mobile: string;
   github: string;
   branch: string;
   skills: string;
 }
 
-const empty: ProfileForm = { fullName: "", displayName: "", bio: "", email: "", github: "", branch: "", skills: "" };
+const empty: ProfileForm = { fullName: "", displayName: "", bio: "", email: "", mobile: "", github: "", branch: "", skills: "" };
 
 const ProfilePage: React.FC = () => {
   const { user, userCode } = useAuth();
@@ -36,6 +37,7 @@ const ProfilePage: React.FC = () => {
           displayName: (data as any).display_name || (data as any).username || "",
           bio: (data as any).bio || "",
           email: (data as any).email || user.email || "",
+          mobile: (data as any).mobile || (user.user_metadata as any)?.mobile || "",
           github: (data as any).github_username || "",
           branch: (data as any).branch || "",
           skills: (((data as any).skills) || []).join(", "),
@@ -69,6 +71,7 @@ const ProfilePage: React.FC = () => {
       display_name: form.displayName.trim() || form.fullName.trim(),
       bio: form.bio.trim(),
       email: form.email.trim(),
+      mobile: form.mobile.trim(),
       github_username: form.github.trim().replace(/^@/, ""),
       branch: form.branch.trim(),
       skills: form.skills.split(",").map(s => s.trim()).filter(Boolean),
@@ -149,6 +152,7 @@ const ProfilePage: React.FC = () => {
             <FieldRO label="full_name:" value={form.fullName} />
             <FieldRO label="display_name:" value={form.displayName} />
             <FieldRO label="email:" value={form.email} />
+            <FieldRO label="mobile_number:" value={form.mobile} />
             <FieldRO label="github:" value={form.github ? `@${form.github}` : ""} />
             <FieldRO label="branch:" value={form.branch} />
             <FieldRO label="skills:" value={form.skills} />
@@ -175,6 +179,14 @@ const ProfilePage: React.FC = () => {
                 <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
                   className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[44px]" />
               </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-primary font-mono">mobile_number:</label>
+                <input type="tel" inputMode="tel" autoComplete="tel" value={form.mobile} onChange={e => setForm({ ...form, mobile: e.target.value })} placeholder="Enter your mobile number"
+                  className="w-full px-4 py-3 rounded-md bg-background border border-border text-foreground focus:ring-1 focus:ring-primary font-mono text-sm min-h-[44px]" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-primary font-mono">branch:</label>
                 <input value={form.branch} onChange={e => setForm({ ...form, branch: e.target.value })} placeholder="e.g. CSE, ECE"
