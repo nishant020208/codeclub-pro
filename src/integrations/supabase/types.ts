@@ -722,6 +722,7 @@ export type Database = {
           full_name: string | null
           github_username: string | null
           id: string
+          mobile: string | null
           skills: string[] | null
           updated_at: string
           user_code: string | null
@@ -738,6 +739,7 @@ export type Database = {
           full_name?: string | null
           github_username?: string | null
           id?: string
+          mobile?: string | null
           skills?: string[] | null
           updated_at?: string
           user_code?: string | null
@@ -754,6 +756,7 @@ export type Database = {
           full_name?: string | null
           github_username?: string | null
           id?: string
+          mobile?: string | null
           skills?: string[] | null
           updated_at?: string
           user_code?: string | null
